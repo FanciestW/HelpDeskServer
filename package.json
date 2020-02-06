@@ -12,5 +12,13 @@
   },
   "author": "William Lin",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/FanciestW/helpdeskserver#readme"
+  "homepage": "https://bitbucket.org/FanciestW/helpdeskserver#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.3",
+    "nodemon": "^2.0.2",
+    "typescript": "^3.7.5"
+  }
 }
