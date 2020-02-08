@@ -18,6 +18,8 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/FanciestW/helpdeskserver#readme",
   "devDependencies": {
+    "@types/mongodb": "^3.3.15",
+    "@types/mongoose": "^5.7.0",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "eslint": "^6.8.0",
@@ -27,6 +29,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@fanciestw/helpdeskmodels": "0.0.1"
+    "@fanciestw/helpdeskmodels": "^0.0.2",
+    "mongoose": "^5.8.11"
   }
 }
