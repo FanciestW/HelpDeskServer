@@ -29,7 +29,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@fanciestw/helpdeskmodels": "^0.0.2",
+    "@fanciestw/helpdeskmodels": "0.0.3",
     "mongoose": "^5.8.11"
   }
 }
