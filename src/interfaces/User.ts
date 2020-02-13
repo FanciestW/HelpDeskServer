@@ -7,7 +7,7 @@ interface IUser extends Document {
     lastName: string;
     passwordDigest: string;
     email: string;
-    phone: string;
+    phone?: string;
     company?: string;
     isTechnician: boolean
 }
