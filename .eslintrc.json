@@ -36,5 +36,14 @@
             "error",
             "always"
         ]
+    },
+    "overrides": [
+    {
+      "files": ["**/models/*.ts", "**/interfaces/*.ts"],
+      "rules": {
+        "no-unused-vars": ["off"],
+        "no-undef": ["off"]
+      }
     }
+  ]
 }
