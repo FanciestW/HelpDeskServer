@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface ITicket extends Document {
+interface ITicket extends Document {
     ticketId: string;
     title: string;
     description: string;
@@ -10,3 +10,5 @@ export interface ITicket extends Document {
     priority: number;
     createdAt: Date;
 }
+
+export default ITicket;
