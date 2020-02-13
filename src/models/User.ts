@@ -28,7 +28,7 @@ export const UserSchema: Schema = new Schema({
     required: true,
     validate: {
       validator: function validateHash(digest) {
-        return digest.startsWith('$2') && digest.length <= 60;
+        return digest.startsWith('$2') && digest.length >= 60;
       },
       message: 'PasswordDigest is not valid',
     }
