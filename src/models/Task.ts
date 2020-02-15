@@ -51,5 +51,11 @@ export const TaskSchema: Schema = new Schema({
   dueDate: { type: Date, required: true, default: Date.now },
 });
 
+TaskSchema.virtual('overdue', {
+  type: Boolean,
+}).get(() => {
+  return Date.now > this.dueDate;
+});
+
 const Task: mongoose.Model<ITask> = mongoose.model<ITask>('Task', TaskSchema);
 export default Task;
