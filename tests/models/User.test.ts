@@ -63,6 +63,23 @@ describe('User Model', function () {
         }
       });
     });
+
+    it('No Optional Information', function() {
+      const optionalUser = Object.assign({}, validUser, {});
+      delete optionalUser.middleName;
+      delete optionalUser.phone;
+      delete optionalUser.company;
+      new User(optionalUser).save((err, newUser) => {
+        if (err) {
+          throw new Error(`Unable to save new user with error: ${err}`);
+        } else {
+          expect(newUser.email).to.equal('jdoe@test.com');
+          expect(newUser.middleName).to.not.exist;
+          expect(newUser.phone).to.not.exist;
+          expect(newUser.company).to.not.exist;
+        }
+      });
+    });
   });
 
   context('Bad Users', function() {
@@ -82,6 +99,11 @@ describe('User Model', function () {
       const plaintextUser = Object.assign({}, validUser, { passwordDigest: 'password' });
       const userPromise = new User(plaintextUser).save();
       assert.isRejected(userPromise, /PasswordDigest is invalid$/);
+    });
+
+    it('Duplicate Uid', async function() {
+      const firstUser = await new User(validUser).save();
+      assert.isRejected(new User(validUser).save(), /.*(duplicate key error)?.*/);
     });
   });
 
