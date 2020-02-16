@@ -32,7 +32,7 @@ export const UserSchema: Schema = new Schema({
       validator: (digest: string) => {
         return digest.startsWith('$2') && digest.length >= 60;
       },
-      message: 'PasswordDigest is not valid',
+      message: 'PasswordDigest is invalid',
     }
   },
   phone: {
@@ -47,7 +47,8 @@ export const UserSchema: Schema = new Schema({
           }
         });
         return i == 10 || i == 11;
-      } 
+      },
+      message: (props) => `${props.value} - is an invalid Phone Number`,
     }
   },
   company: { type: String, required: false },

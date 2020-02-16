@@ -53,8 +53,8 @@ describe('User Model', function () {
     });
   });
 
-  context('Valid Users', function () {
-    it('All information', function () {
+  context('Valid Users', function() {
+    it('All information', function() {
       new User(validUser).save((err, newUser) => {
         if (err) {
           throw new Error(`Unable to save new user with error: ${err}`);
@@ -65,11 +65,23 @@ describe('User Model', function () {
     });
   });
 
-  context('Bad Users', function () {
-    it('Bad Email', function () {
+  context('Bad Users', function() {
+    it('Bad Email', function() {
       const badEmailUser = Object.assign({}, validUser, { email: 'testing.com' });
       const userPromise = new User(badEmailUser).save();
       assert.isRejected(userPromise, /is an invalid Email$/);
+    });
+
+    it('Bad Phone', function() {
+      const badPhoneUser = Object.assign({}, validUser, { phone: '123456' });
+      const userPromise = new User(badPhoneUser).save();
+      assert.isRejected(userPromise, /is an invalid Phone Number$/);
+    });
+
+    it('Plain text password', function() {
+      const plaintextUser = Object.assign({}, validUser, { passwordDigest: 'password' });
+      const userPromise = new User(plaintextUser).save();
+      assert.isRejected(userPromise, /PasswordDigest is invalid$/);
     });
   });
 
