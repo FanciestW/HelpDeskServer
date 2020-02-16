@@ -9,7 +9,7 @@
     "build": "tsc --p ./tsconfig.json",
     "lint": "eslint ./src/**/*.ts",
     "lint-fix": "eslint --fix ./src/**/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register ./tests/**/*.test.ts"
   },
   "repository": {
     "type": "git",
@@ -19,13 +19,17 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/FanciestW/helpdeskserver#readme",
   "devDependencies": {
+    "@types/chai": "^4.2.9",
+    "@types/mocha": "^7.0.1",
     "@types/mongodb": "^3.3.15",
     "@types/mongoose": "^5.7.0",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.3",
     "i": "^0.3.6",
+    "mocha": "^7.0.1",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"

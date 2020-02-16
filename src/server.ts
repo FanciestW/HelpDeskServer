@@ -6,7 +6,9 @@ require('dotenv').config();
 
 const mongooseOptions = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
 };
 
 const mongoUri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@helpdesk-cluster-maeej.mongodb.net/test?retryWrites=true&w=majority`;
