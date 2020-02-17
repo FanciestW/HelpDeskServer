@@ -52,13 +52,38 @@ describe('Ticket Mongoose Model', function() {
     await Mongoose.disconnect();
   });
 
-  context('Valid Ticket', function() {
+  context('Valid Tickets', function() {
     it('Ticket With All Details', async function() {
-      const ticketPromise = new Ticket(fullDetailTicket).save((err, ticket) => {
-        expect(ticket.assignedTo).to.be.equal('001');
-        expect(ticket.createdBy).to.be.equal('002');
-      });
+      const ticket = await new Ticket(fullDetailTicket).save();
+      expect(ticket.assignedTo).to.be.equal('001');
+      expect(ticket.createdBy).to.be.equal('002');
+    });
+
+    it('Un-assigned Ticket', async function() {
+      const unassignedTicket = Object.assign({}, fullDetailTicket);
+      delete unassignedTicket.assignedTo;
+      const ticket = await new Ticket(unassignedTicket).save();
+      expect(ticket.assignedTo).to.not.exist;
     });
   });
 
+  context('Invalid Tickets', function() {
+    it('Ticket Assigned to Non-existance User', function() {
+      const wrongAssignmentTicket = Object.assign({}, fullDetailTicket, { assignedTo: '404' });
+      return assert.isRejected(new Ticket(wrongAssignmentTicket).save(), Mongoose.Error.ValidationError);
+    });
+
+    it('Ticket with no creator', function() {
+      const noCreatorTicket = Object.assign({}, fullDetailTicket);
+      delete noCreatorTicket.createdBy;
+      return assert.isRejected(new Ticket(noCreatorTicket).save(), Mongoose.Error.ValidationError);
+    });
+
+    it('Ticket with duplicate ticketId', async function() {
+      const ticketId = uniqid();
+      const ticketDoc = Object.assign({}, fullDetailTicket, { ticketId, });
+      await new Ticket(ticketDoc).save();
+      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(duplicate key error)?.*/);
+    });
+  });
 });

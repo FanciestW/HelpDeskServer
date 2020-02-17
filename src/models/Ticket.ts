@@ -19,14 +19,12 @@ export const TicketSchema: Schema = new Schema({
   createdBy: { 
     type: String,
     required: true,
-    default: '',
     validate: validateUserExists,
     message: 'Invalid User',
   },
   assignedTo: {
     type: String,
-    required: true,
-    default: '',
+    required: false,
     validate: validateUserExists,
     message: 'Invalid User',
   },

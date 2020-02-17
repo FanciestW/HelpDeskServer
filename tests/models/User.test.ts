@@ -67,25 +67,24 @@ describe('User Mongoose Model', function() {
     it('Bad Email', function() {
       const badEmailUser = Object.assign({}, validUser, { email: 'testing.com' });
       const userPromise = new User(badEmailUser).save();
-      assert.isRejected(userPromise, /is an invalid Email$/);
+      return assert.isRejected(userPromise, /is an invalid Email$/);
     });
 
     it('Bad Phone', function() {
       const badPhoneUser = Object.assign({}, validUser, { phone: '123456' });
       const userPromise = new User(badPhoneUser).save();
-      assert.isRejected(userPromise, /is an invalid Phone Number$/);
+      return assert.isRejected(userPromise, /is an invalid Phone Number$/);
     });
 
     it('Plain text password', function() {
       const plaintextUser = Object.assign({}, validUser, { passwordDigest: 'password' });
       const userPromise = new User(plaintextUser).save();
-      assert.isRejected(userPromise, /PasswordDigest is invalid$/);
+      return assert.isRejected(userPromise, /PasswordDigest is invalid$/);
     });
 
     it('Duplicate Uid', async function() {
       const firstUser = await new User(validUser).save();
-      assert.isRejected(new User(validUser).save(), /.*(duplicate key error)?.*/);
+      return assert.isRejected(new User(validUser).save(), /.*(duplicate key error)?.*/);
     });
   });
-
 });
