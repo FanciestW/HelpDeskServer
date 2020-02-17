@@ -86,7 +86,7 @@ describe('User Mongoose Model', function() {
 
     it('Duplicate Uid', async function() {
       const firstUser = await new User(validUser).save();
-      return assert.isRejected(new User(validUser).save(), /.*(duplicate key error)?.*/);
+      return assert.isRejected(new User(validUser).save(), /.*(duplicate key error).*/);
     });
   });
 });

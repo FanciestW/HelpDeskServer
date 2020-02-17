@@ -13,9 +13,11 @@ describe('Task Mongoose Model Test', function () {
     title: 'Unit Test',
     description: 'Write unit tests',
     relatedTickets: ['ticket001'],
+    subtasks: [],
     createdBy: 'user1',
     assignedTo: 'user1',
     priority: 0,
+    createdAt: new Date(),
     dueDate: new Date().setDate(new Date().getDate() + 1),
   };
 
@@ -76,9 +78,43 @@ describe('Task Mongoose Model Test', function () {
       const taskDoc = Object.assign({}, validTask);
       delete taskDoc.assignedTo;
       const task = await new Task(taskDoc).save();
-      const task1 = await Task.findOne({ title: 'Unit Test' });
-      expect(task1.assignedTo).to.be.equal(task.createdBy);
+      expect(task.assignedTo).to.be.equal(task.createdBy);
 
+    });
+
+    it('Task with no optional fields', async function() {
+      const taskDoc = Object.assign({}, validTask);
+      delete taskDoc.description;
+      delete taskDoc.subtasks;
+      delete taskDoc.relatedTickets;
+      delete taskDoc.assignedTo;
+      delete taskDoc.createdAt;
+      delete taskDoc.dueDate;
+      const task = await new Task(taskDoc).save();
+      expect(task.description).to.be.equal('');
+      expect(task.subtasks).to.deep.equal([]);
+      expect(task.relatedTickets).to.deep.equal([]);
+      expect(task.assignedTo).to.be.equal(task.createdBy);
+      expect(task.createdAt.getSeconds()).to.be.equal((new Date().getSeconds()));
+      expect(task.dueDate.getDate()).to.be.equal((new Date().getDate()));
+
+    });
+  });
+
+  context('Invalid Tasks', function() {
+    it('No Creator Task', async function() {
+      const taskDoc = Object.assign({}, validTask, { createdBy: '' });
+      return assert.isRejected(new Task(taskDoc).save(), /.*(`createdBy` is required).*/);
+    });
+
+    it('Assigned to non-existant user', function() {
+      const taskDoc = Object.assign({}, validTask, { assignedTo: 'user999' });
+      return assert.isRejected(new Task(taskDoc).save(), /.*(Invalid assignedTo User).*/);
+    });
+
+    it('Duplicated Task', async function() {
+      await new Task(validTask).save();
+      return assert.isRejected(new Task(validTask).save(), /.*(duplicate key error).*/);
     });
   });
 

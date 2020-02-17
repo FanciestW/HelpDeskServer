@@ -22,7 +22,7 @@ export const TicketSchema: Schema = new Schema({
         return titleStr.length > 0;
       },
       message: 'A blank title is not allowed',
-    }
+    },
   },
   description: { type: String, required: false, default: '' },
   createdBy: { 

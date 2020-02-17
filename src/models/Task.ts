@@ -2,16 +2,6 @@ import mongoose, { Schema } from 'mongoose';
 import ITask from '../interfaces/Task';
 import User from './User';
 
-const validateUid = async (uid) => {
-  if (uid === '') {
-    return true;
-  } else if (await User.count({ uid, }) > 0) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 export const TaskSchema: Schema<ITask> = new Schema<ITask>({
   taskId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
@@ -22,17 +12,28 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
     type: String,
     required: true,
     validate: {
-      validator: validateUid,
-      message: 'Invalid User',
+      validator: async (uid) => {
+        if (await User.countDocuments({ uid, }) > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      message: 'Invalid createdBy User',
     }
   },
   assignedTo: {
     type: String,
     required: false,
-    default: '',
     validate: {
-      validator: validateUid,
-      message: 'Invalid User',
+      validator: async (uid) => {
+        if (uid === '' || await User.countDocuments({ uid, }) > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      message: 'Invalid assignedTo User',
     }
   },
   priority: {
@@ -50,9 +51,9 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
   dueDate: { type: Date, required: false, default: Date.now },
 });
 
-TaskSchema.pre('save', function(next) {
+TaskSchema.pre('save', function (next) {
   if (this.get('createdBy')) {
-    this.set({ assignedTo: this.get('createdBy')});
+    this.set({ assignedTo: this.get('createdBy') });
   }
   next();
 });
