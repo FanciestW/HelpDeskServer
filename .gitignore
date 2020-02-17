@@ -1,3 +1,6 @@
+# npmrc
+.npmrc
+
 # Build dir
 build/
 
