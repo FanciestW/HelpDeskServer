@@ -12,7 +12,7 @@ const validateUid = async (uid) => {
   }
 };
 
-export const TaskSchema: Schema = new Schema({
+export const TaskSchema: Schema<ITask> = new Schema<ITask>({
   taskId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
   description: { type: String, required: false, default: '' },
@@ -29,13 +29,7 @@ export const TaskSchema: Schema = new Schema({
   assignedTo: {
     type: String,
     required: false,
-    default: () => {
-      if (this.createdBy) {
-        return this.createdBy;
-      } else {
-        return null;
-      }
-    },
+    default: '',
     validate: {
       validator: validateUid,
       message: 'Invalid User',
@@ -54,6 +48,13 @@ export const TaskSchema: Schema = new Schema({
   },
   createdAt: { type: Date, required: false, default: Date.now },
   dueDate: { type: Date, required: false, default: Date.now },
+});
+
+TaskSchema.pre('save', function(next) {
+  if (this.get('createdBy')) {
+    this.set({ assignedTo: this.get('createdBy')});
+  }
+  next();
 });
 
 TaskSchema.virtual('overdue', {

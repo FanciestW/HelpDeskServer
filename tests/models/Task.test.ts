@@ -71,6 +71,15 @@ describe('Task Mongoose Model Test', function () {
       expect(task.createdAt.getDate()).to.be.equal((new Date().getDate()));
       expect(task.dueDate.getDate()).to.be.equal((new Date().getDate() + 1));
     });
+
+    it('Default Self-Assign Task', async function() {
+      const taskDoc = Object.assign({}, validTask);
+      delete taskDoc.assignedTo;
+      const task = await new Task(taskDoc).save();
+      const task1 = await Task.findOne({ title: 'Unit Test' });
+      expect(task1.assignedTo).to.be.equal(task.createdBy);
+
+    });
   });
 
 });
