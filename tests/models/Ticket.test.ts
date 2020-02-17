@@ -69,8 +69,8 @@ describe('Ticket Mongoose Model', function() {
 
   context('Invalid Tickets', function() {
     it('Ticket Assigned to Non-existance User', function() {
-      const wrongAssignmentTicket = Object.assign({}, fullDetailTicket, { assignedTo: '404' });
-      return assert.isRejected(new Ticket(wrongAssignmentTicket).save(), Mongoose.Error.ValidationError);
+      const badTicket = Object.assign({}, fullDetailTicket, { assignedTo: '404' });
+      return assert.isRejected(new Ticket(badTicket).save(), Mongoose.Error.ValidationError);
     });
 
     it('Ticket with no creator', function() {
@@ -83,7 +83,13 @@ describe('Ticket Mongoose Model', function() {
       const ticketId = uniqid();
       const ticketDoc = Object.assign({}, fullDetailTicket, { ticketId, });
       await new Ticket(ticketDoc).save();
-      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(duplicate key error)?.*/);
+      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(duplicate key error).*/);
+    });
+
+    it('Ticket with no title', async function() {
+      const ticketDoc = Object.assign({}, fullDetailTicket, {});
+      delete ticketDoc.title;
+      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(`title` is required).*/);
     });
   });
 });
