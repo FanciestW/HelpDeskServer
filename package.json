@@ -7,8 +7,8 @@
     "start": "npm run build && node build/server.js",
     "dev": "nodemon",
     "build": "tsc --p ./tsconfig.json",
-    "lint": "eslint ./src/**/*.ts",
-    "lint-fix": "eslint --fix ./src/**/*.ts",
+    "lint": "eslint ./src/**/*.ts ./tests/**/*.test.ts",
+    "lint-fix": "eslint --fix ./src/**/*.ts ./tests/**/*.test.ts",
     "test": "mocha -r ts-node/register ./tests/**/*.test.ts"
   },
   "repository": {
