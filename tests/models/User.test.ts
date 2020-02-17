@@ -47,21 +47,23 @@ describe('User Mongoose Model', function() {
       });
     });
 
-    it('No Optional Information', function() {
+    it('No Optional Information', async function() {
       const optionalUser = Object.assign({}, validUser, {});
       delete optionalUser.middleName;
       delete optionalUser.phone;
       delete optionalUser.company;
-      new User(optionalUser).save((err, newUser) => {
-        if (err) {
-          throw new Error(`Unable to save new user with error: ${err}`);
-        } else {
-          expect(newUser.email).to.equal('jdoe@test.com');
-          expect(newUser.middleName).to.not.exist;
-          expect(newUser.phone).to.not.exist;
-          expect(newUser.company).to.not.exist;
-        }
-      });
+      const newUser = await new User(optionalUser).save();
+      expect(newUser.email).to.equal('jdoe@test.com');
+      expect(newUser.middleName).to.not.exist;
+      expect(newUser.phone).to.not.exist;
+      expect(newUser.company).to.not.exist;
+    });
+
+    it('User with No isTechnician field', async function() {
+      const userDoc = Object.assign({}, validUser);
+      delete userDoc.isTechnician;
+      const newUser = await new User(userDoc).save();
+      expect(newUser.isTechnician).to.equal(false);
     });
   });
 
