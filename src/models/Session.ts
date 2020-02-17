@@ -22,8 +22,8 @@ export const SessionSchema: Schema = new Schema({
       message: 'Invalid Uid',
     }
   },
-  createdAt: { type: Date, required: true, default: Date.now },
-  expiresAt: { type: Date, required: true, default: Date.now() + 64000 },
+  createdAt: { type: Date, required: false, default: Date.now },
+  expiresAt: { type: Date, required: false, default: Date.now() + 64000 },
 });
 
 const Session: mongoose.Model<ISession> = mongoose.model('Session', SessionSchema);

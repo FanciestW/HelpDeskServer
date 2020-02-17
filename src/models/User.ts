@@ -6,7 +6,7 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
   firstName: { type: String, required: true },
   middleName: { type: String, required: false },
   lastName: { type: String, required: true },
-  createdAt: { type: Date, required: true, default: Date.now },
+  createdAt: { type: Date, required: false, default: Date.now },
   email: {
     type: String,
     required: true,

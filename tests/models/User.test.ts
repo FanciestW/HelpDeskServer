@@ -24,6 +24,7 @@ describe('User Mongoose Model', function() {
       useFindAndModify: false,
       useCreateIndex: true,
     });
+    await User.deleteMany({});
   });
 
   beforeEach(async function() {
@@ -31,6 +32,7 @@ describe('User Mongoose Model', function() {
   });
 
   after(async function() {
+    await User.deleteMany({});
     await Mongoose.disconnect();
   });
 

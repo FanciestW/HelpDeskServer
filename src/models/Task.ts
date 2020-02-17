@@ -14,14 +14,13 @@ const validateUid = async (uid) => {
 
 export const TaskSchema: Schema = new Schema({
   taskId: { type: String, required: true, unique: true },
-  title: { type: String, required: true, default: '' },
-  description: { type: String, required: true, default: '' },
-  subtasks: { type: [String], required: true, default: [] },
-  relatedCases: { type: [String], required: true, default: [] },
+  title: { type: String, required: true },
+  description: { type: String, required: false, default: '' },
+  subtasks: { type: [String], required: false, default: [] },
+  relatedTickets: { type: [String], required: false, default: [] },
   createdBy: {
     type: String,
     required: true,
-    default: '',
     validate: {
       validator: validateUid,
       message: 'Invalid User',
@@ -29,8 +28,14 @@ export const TaskSchema: Schema = new Schema({
   },
   assignedTo: {
     type: String,
-    required: true,
-    default: '',
+    required: false,
+    default: () => {
+      if (this.createdBy) {
+        return this.createdBy;
+      } else {
+        return null;
+      }
+    },
     validate: {
       validator: validateUid,
       message: 'Invalid User',
@@ -47,8 +52,8 @@ export const TaskSchema: Schema = new Schema({
       message: 'Priority must be in the range of 0 and 5',
     }
   },
-  createdAt: { type: Date, required: true, default: Date.now },
-  dueDate: { type: Date, required: true, default: Date.now },
+  createdAt: { type: Date, required: false, default: Date.now },
+  dueDate: { type: Date, required: false, default: Date.now },
 });
 
 TaskSchema.virtual('overdue', {

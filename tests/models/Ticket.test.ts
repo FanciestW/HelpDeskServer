@@ -22,25 +22,24 @@ describe('Ticket Mongoose Model', function() {
       useFindAndModify: false,
       useCreateIndex: true,
     });
-    const user1 = {
+    await User.deleteMany({});
+    await Ticket.deleteMany({});
+    await new User({
       uid: '001',
       firstName: 'John',
       lastName: 'Doe',
       email: 'johndoe@test.com',
       passwordDigest: '$2y$12$HY0krNFDnE.FKVPqqZgs2eeVyOUkY0eRaoOi8elHEDGYpdBB.0.MS',
       isTechnician: true,
-    };
-    const user2 = {
+    }).save();
+    await new User({
       uid: '002',
       firstName: 'Jane',
       lastName: 'Doe',
       email: 'janedoe@test.com',
       passwordDigest: '$2y$12$HY0krNFDnE.FKVPqqZgs2eeVyOUkY0eRaoOi8elHEDGYpdBB.0.MS',
       isTechnician: false,
-    };
-    await User.deleteMany({});
-    await new User(user1).save();
-    await new User(user2).save();
+    }).save();
   });
 
   beforeEach(async function() {
@@ -49,6 +48,7 @@ describe('Ticket Mongoose Model', function() {
 
   after(async function() {
     await User.deleteMany({});
+    await Ticket.deleteMany({});
     await Mongoose.disconnect();
   });
 

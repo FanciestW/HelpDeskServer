@@ -9,6 +9,7 @@ interface ITicket extends Document {
     status: string;
     priority: number;
     createdAt: Date;
+    dueDate: Date;
 }
 
 export default ITicket;
