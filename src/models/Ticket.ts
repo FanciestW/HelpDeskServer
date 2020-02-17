@@ -14,8 +14,8 @@ const validateUserExists = async (uid) => {
 
 export const TicketSchema: Schema = new Schema({
   ticketId: { type: String, required: true, unique: true },
-  title: { type: String, required: true, default: '' },
-  description: { type: String, required: true, default: '' },
+  title: { type: String, required: true, },
+  description: { type: String, required: false, default: '' },
   createdBy: { 
     type: String,
     required: true,
