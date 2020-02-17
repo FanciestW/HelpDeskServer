@@ -1,7 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import Mongoose, { Schema } from 'mongoose';
 import IUser from '../interfaces/User';
 
-export const UserSchema: Schema = new Schema({
+export const UserSchema: Schema<IUser> = new Schema<IUser>({
   uid: { type: String, required: true, unique: true },
   firstName: { type: String, required: true },
   middleName: { type: String, required: false },
@@ -59,5 +59,5 @@ UserSchema.virtual('fullName').get(() => {
   return `${this.firstName} ${this.middleName} ${this.lastName}`;
 });
 
-const User: mongoose.Model<IUser> = mongoose.model<IUser>('User', UserSchema);
+const User: Mongoose.Model<IUser> = Mongoose.model<IUser>('User', UserSchema);
 export default User;

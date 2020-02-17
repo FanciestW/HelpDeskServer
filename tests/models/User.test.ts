@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import Mongoose from 'mongoose';
 import User from '../../src/models/User';
 import chai, { expect, assert } from 'chai';
 chai.use(require('chai-as-promised'));
 
-describe('User Model', function () {
+describe('User Mongoose Model', function() {
 
   const validUser = {
     uid: '1234567890abcdefg',
@@ -17,40 +17,21 @@ describe('User Model', function () {
     isTechnician: true,
   };
 
-  before(function (done) {
-    this.timeout(25000);
-    mongoose.connect('mongodb://localhost:27017/helpdesktest', {
+  before(async function() {
+    await Mongoose.connect('mongodb://localhost:27017/helpdesktest', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
       useCreateIndex: true,
-    }, (err) => {
-      if (err) {
-        throw new Error(`Failed to connect to MongoDB Test Database with error: ${err}.`);
-      } else {
-        done();
-      }
     });
   });
 
-  beforeEach(function (done) {
-    User.deleteMany({}, (err) => {
-      if (err) {
-        throw new Error(`Unable to delete all Users: ${err}`);
-      } else {
-        done();
-      }
-    });
+  beforeEach(async function() {
+    await User.deleteMany({});
   });
 
-  after(function(done) {
-    mongoose.connection.close((err) => {
-      if (err) {
-        throw new Error(`Error closing mongoose connection: ${err}`);
-      } else {
-        done();
-      }
-    });
+  after(async function() {
+    await Mongoose.disconnect();
   });
 
   context('Valid Users', function() {

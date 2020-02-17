@@ -5,7 +5,7 @@ import User from './User';
 const validateUserExists = async (uid) => {
   if (uid === '') {
     return true;
-  } else if (await User.count({ uid, }) > 0) {
+  } else if (await User.countDocuments({ uid, }) > 0) {
     return true;
   } else {
     return false;
