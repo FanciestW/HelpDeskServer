@@ -3,9 +3,7 @@ import ISession from '../interfaces/Session';
 import User from './User';
 
 const validateUid = async (uid) => {
-  if (uid === '') {
-    return true;
-  } else if (await User.count({ uid, }) > 0) {
+  if (await User.countDocuments({ uid, }) > 0) {
     return true;
   } else {
     return false;
