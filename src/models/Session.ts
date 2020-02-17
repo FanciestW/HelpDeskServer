@@ -11,7 +11,7 @@ const validateUid = async (uid) => {
 };
 
 export const SessionSchema: Schema = new Schema({
-  sid: { type: String, required: true },
+  sid: { type: String, required: true, unique: true },
   uid: {
     type: String,
     required: true,
@@ -21,7 +21,7 @@ export const SessionSchema: Schema = new Schema({
     }
   },
   createdAt: { type: Date, required: true, default: Date.now },
-  expiresAt: { type: Date, required: true, default: Date.now() + 64000 },
+  expiresAt: { type: Date, required: true, default: Date.now() + 86400 * 1000, expires: 86400 },
 });
 
 const Session: mongoose.Model<ISession> = mongoose.model('Session', SessionSchema);
