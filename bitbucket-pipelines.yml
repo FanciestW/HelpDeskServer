@@ -6,7 +6,7 @@
 image: node:10.15.3
 
 pipelines:
-  default:
+  test:
     - step:
         caches:
           - node
@@ -15,6 +15,15 @@ pipelines:
           - npm test
         services: 
           - mongo 
+  build:
+    - step:
+      caches:
+        - node
+      script:
+        - npm install
+        - npm build
+      services:
+        - mongo
           
 definitions: 
   services: 
