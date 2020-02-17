@@ -11,13 +11,25 @@ pipelines:
       - step:
           caches:
             - node
-          script: # Modify the commands below to build your repository.
+          script:
             - npm install
             - npm run lint
             - npm test
             - npm build
           services: 
             - mongo 
+  branches:
+    master:
+      - step:
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run lint
+          - npm test
+          - npm build
+        services:
+          - mongo
           
 definitions: 
   services: 
