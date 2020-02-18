@@ -60,7 +60,7 @@ TaskSchema.pre('save', function (next) {
 
 TaskSchema.virtual('overdue', {
   type: Boolean,
-}).get(() => {
+}).get(function() {
   return Date.now > this.dueDate;
 });
 

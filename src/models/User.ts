@@ -55,8 +55,12 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
   isTechnician: { type: Boolean, required: true, default: false },
 });
 
-UserSchema.virtual('fullName').get(() => {
-  return `${this.firstName} ${this.middleName} ${this.lastName}`;
+UserSchema.virtual('fullName').get(function() {
+  if(this.middleName) {
+    return `${this.firstName} ${this.middleName} ${this.lastName}`;
+  } else {
+    return `${this.firstName} ${this.lastName}`;
+  }
 });
 
 const User: Mongoose.Model<IUser> = Mongoose.model<IUser>('User', UserSchema);

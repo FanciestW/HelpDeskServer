@@ -5,6 +5,7 @@ interface IUser extends Document {
     firstName: string;
     middleName?: string;
     lastName: string;
+    fullName?: string;
     passwordDigest: string;
     email: string;
     phone?: string;
