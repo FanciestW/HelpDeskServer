@@ -24,15 +24,15 @@ pipelines:
   branches:
     master:
       - step:
-        caches:
-          - node
-        script:
-          - npm install
-          - npm run lint
-          - npm test
-          - npm build
-        services:
-          - mongo
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run lint
+            - npm test
+            - npm build
+          services:
+            - mongo
           
 definitions: 
   services: 
