@@ -5,6 +5,9 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: node:10.15.3
 
+options:
+  max-time: 5
+
 pipelines:
   pull-requests:
     '**':
