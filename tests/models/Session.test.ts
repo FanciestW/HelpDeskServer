@@ -40,6 +40,7 @@ describe('Session Mongoose Model Tests', function () {
   after(async function() {
     await Session.deleteMany({});
     await User.deleteMany({});
+    await Mongoose.disconnect();
   });
 
   context('Valid Sessions', function () {
