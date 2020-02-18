@@ -5,7 +5,7 @@ interface ITask extends Document {
     title: string;
     description: string;
     subtasks: Array<string>;
-    relatedCases: Array<string>;
+    relatedTickets: Array<string>;
     createdBy: string;
     assignedTo: string;
     priority: number;
