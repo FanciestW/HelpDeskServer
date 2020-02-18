@@ -6,7 +6,8 @@ import chai, { expect, assert } from 'chai';
 chai.use(require('chai-as-promised'));
 
 describe('Ticket Mongoose Model', function() {
-
+  this.slow(1000);
+  
   const fullDetailTicket = {
     ticketId: uniqid.time(),
     title: 'Test Ticket',

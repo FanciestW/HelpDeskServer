@@ -4,7 +4,8 @@ import chai, { expect, assert } from 'chai';
 chai.use(require('chai-as-promised'));
 
 describe('User Mongoose Model', function() {
-
+  this.slow(1000);
+  
   const validUser = {
     uid: '1234567890abcdefg',
     firstName: 'John',

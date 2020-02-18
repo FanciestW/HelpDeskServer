@@ -7,7 +7,8 @@ import chai, { expect, assert } from 'chai';
 chai.use(require('chai-as-promised'));
 
 describe('Task Mongoose Model Test', function () {
-
+  this.slow(1000);
+  
   const validTask = {
     taskId: uniqid(),
     title: 'Unit Test',
