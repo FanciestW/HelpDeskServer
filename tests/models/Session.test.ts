@@ -23,14 +23,14 @@ describe('Session Mongoose Model Tests', function () {
       useCreateIndex: true,
     });
     await User.deleteMany({});
-    await new User({
+    await User.create({
       uid: 'user001',
       firstName: 'John',
       lastName: 'Doe',
       email: 'jdoe@test.com',
       passwordDigest: '$2y$12$HY0krNFDnE.FKVPqqZgs2eeVyOUkY0eRaoOi8elHEDGYpdBB.0.MS',
       isTechnician: true,
-    }).save();
+    });
   });
 
   beforeEach(async function () {
@@ -44,17 +44,17 @@ describe('Session Mongoose Model Tests', function () {
   });
 
   context('Valid Sessions', function () {
-    it('New Session', async function () {
-      const session = await new Session(validSession).save();
+    it('Session.create', async function () {
+      const session = await Session.create(validSession);
       const now = new Date().getTime() + 86400 * 1000;
       expect(session.uid).to.equal('user001');
       expect(session.expiresAt.getTime()).to.be.within(now - 10000, now + 10000);
     });
 
-    it('New Session Without expiresAt', async function () {
+    it('Session.create Without expiresAt', async function () {
       const sessionDoc = Object.assign({}, validSession);
       delete sessionDoc.expiresAt;
-      const session = await new Session(sessionDoc).save();
+      const session = await Session.create(sessionDoc);
       const now = new Date().getTime() + 86400 * 1000;
       expect(session.uid).to.equal('user001');
       expect(session.expiresAt.getTime()).to.be.within(now - 10000, now + 10000);
@@ -62,8 +62,8 @@ describe('Session Mongoose Model Tests', function () {
 
     it('Two Sessions for Same User', async function() {
       const session2Doc = Object.assign({}, validSession, { sid: uniqid() });
-      const session1 = await new Session(validSession).save();
-      const session2 = await new Session(session2Doc).save();
+      const session1 = await Session.create(validSession);
+      const session2 = await Session.create(session2Doc);
       const now = new Date().getTime() + 86400 * 1000;
       expect(session1.uid).to.equal(session2.uid);
       expect(session1.sid).to.not.equal(session2.sid);
@@ -74,21 +74,21 @@ describe('Session Mongoose Model Tests', function () {
 
   context('Invalid Sessions', function() {
     it('Duplicate Session', async function() {
-      await new Session(validSession).save();
-      return assert.isRejected(new Session(validSession).save(), /.*(duplicate key error).*/);
+      await Session.create(validSession);
+      return assert.isRejected(Session.create(validSession), /.*(duplicate key error).*/);
     });
 
     it('Making 11 Sessions for single user', async function() {
       for (let i = 0; i < 10; i+=1) {
         const sessionDoc = Object.assign({}, validSession, { sid: uniqid() });
-        await new Session(sessionDoc).save();
+        await Session.create(sessionDoc);
       }
-      return assert.isRejected(new Session(validSession).save(), /.*(Too many sessions).*/);
+      return assert.isRejected(Session.create(validSession), /.*(Too many sessions).*/);
     });
 
     it('expiresAt is before createdAt', function() {
       const sessionDoc = Object.assign({}, validSession, { expiresAt: Date.now() - 3600000});
-      return assert.isRejected(new Session(sessionDoc).save(), /.*(expiresAt cannot be before createdAt).*/);
+      return assert.isRejected(Session.create(sessionDoc), /.*(expiresAt cannot be before createdAt).*/);
     });
   });
 });

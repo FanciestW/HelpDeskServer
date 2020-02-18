@@ -25,22 +25,22 @@ describe('Ticket Mongoose Model', function() {
     });
     await User.deleteMany({});
     await Ticket.deleteMany({});
-    await new User({
+    await User.create({
       uid: '001',
       firstName: 'John',
       lastName: 'Doe',
       email: 'johndoe@test.com',
       passwordDigest: '$2y$12$HY0krNFDnE.FKVPqqZgs2eeVyOUkY0eRaoOi8elHEDGYpdBB.0.MS',
       isTechnician: true,
-    }).save();
-    await new User({
+    });
+    await User.create({
       uid: '002',
       firstName: 'Jane',
       lastName: 'Doe',
       email: 'janedoe@test.com',
       passwordDigest: '$2y$12$HY0krNFDnE.FKVPqqZgs2eeVyOUkY0eRaoOi8elHEDGYpdBB.0.MS',
       isTechnician: false,
-    }).save();
+    });
   });
 
   beforeEach(async function() {
@@ -55,7 +55,7 @@ describe('Ticket Mongoose Model', function() {
 
   context('Valid Tickets', function() {
     it('Ticket With All Details', async function() {
-      const ticket = await new Ticket(fullDetailTicket).save();
+      const ticket = await Ticket.create(fullDetailTicket);
       expect(ticket.assignedTo).to.be.equal('001');
       expect(ticket.createdBy).to.be.equal('002');
     });
@@ -63,7 +63,7 @@ describe('Ticket Mongoose Model', function() {
     it('Un-assigned Ticket', async function() {
       const unassignedTicket = Object.assign({}, fullDetailTicket);
       delete unassignedTicket.assignedTo;
-      const ticket = await new Ticket(unassignedTicket).save();
+      const ticket = await Ticket.create(unassignedTicket);
       expect(ticket.assignedTo).to.not.exist;
     });
   });
@@ -71,26 +71,26 @@ describe('Ticket Mongoose Model', function() {
   context('Invalid Tickets', function() {
     it('Ticket Assigned to Non-existance User', function() {
       const badTicket = Object.assign({}, fullDetailTicket, { assignedTo: '404' });
-      return assert.isRejected(new Ticket(badTicket).save(), Mongoose.Error.ValidationError);
+      return assert.isRejected(Ticket.create(badTicket), Mongoose.Error.ValidationError);
     });
 
     it('Ticket with no creator', function() {
       const noCreatorTicket = Object.assign({}, fullDetailTicket);
       delete noCreatorTicket.createdBy;
-      return assert.isRejected(new Ticket(noCreatorTicket).save(), Mongoose.Error.ValidationError);
+      return assert.isRejected(Ticket.create(noCreatorTicket), Mongoose.Error.ValidationError);
     });
 
     it('Ticket with duplicate ticketId', async function() {
       const ticketId = uniqid();
       const ticketDoc = Object.assign({}, fullDetailTicket, { ticketId, });
-      await new Ticket(ticketDoc).save();
-      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(duplicate key error).*/);
+      await Ticket.create(ticketDoc);
+      return assert.isRejected(Ticket.create(ticketDoc), /.*(duplicate key error).*/);
     });
 
     it('Ticket with no title', async function() {
       const ticketDoc = Object.assign({}, fullDetailTicket, {});
       delete ticketDoc.title;
-      return assert.isRejected(new Ticket(ticketDoc).save(), /.*(`title` is required).*/);
+      return assert.isRejected(Ticket.create(ticketDoc), /.*(`title` is required).*/);
     });
   });
 });
