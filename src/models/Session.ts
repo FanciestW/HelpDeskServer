@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Mongoose } from 'mongoose';
 import ISession from '../interfaces/Session';
 import User from './User';
 
@@ -22,6 +22,18 @@ export const SessionSchema: Schema = new Schema({
   },
   createdAt: { type: Date, required: true, default: Date.now },
   expiresAt: { type: Date, required: true, default: Date.now() + 86400 * 1000, expires: 86400 },
+});
+
+SessionSchema.pre('save', async function(next) {
+  const uid = this.get('uid');
+  const userSessions = await Session.countDocuments({ uid, });
+  if (userSessions >= 10) {
+    throw new mongoose.Error('Too many sessions');
+  }
+  if (this.get('expiresAt') < this.get('createdAt')) {
+    throw new mongoose.Error('expiresAt cannot be before createdAt');
+  }
+  next();
 });
 
 const Session: mongoose.Model<ISession> = mongoose.model('Session', SessionSchema);
