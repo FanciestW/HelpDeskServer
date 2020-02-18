@@ -87,7 +87,7 @@ describe('Session Mongoose Model Tests', function () {
 
     it('expiresAt is before createdAt', function() {
       const sessionDoc = Object.assign({}, validSession, { expiresAt: Date.now() - 3600000});
-      return assert.isRejected(new Session(sessionDoc).save(), /.*(expiresAt cannot be before createdAt).*/)
+      return assert.isRejected(new Session(sessionDoc).save(), /.*(expiresAt cannot be before createdAt).*/);
     });
   });
 });
