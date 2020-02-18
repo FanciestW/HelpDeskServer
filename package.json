@@ -9,7 +9,7 @@
     "build": "tsc --p ./tsconfig.json",
     "lint": "eslint ./src/**/*.ts ./tests/**/*.ts",
     "lint-fix": "eslint --fix ./src/**/*.ts ./tests/**/*.ts",
-    "test": "mocha -r ts-node/register ./tests/**/*.test.ts"
+    "test": "mocha --exit -r ts-node/register ./tests/**/*.test.ts"
   },
   "repository": {
     "type": "git",
