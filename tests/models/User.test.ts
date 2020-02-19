@@ -68,12 +68,24 @@ describe('User Mongoose Model', function() {
       expect(newUser.isTechnician).to.equal(false);
     });
 
-    it('User has virtual fullName field', async function() {
+    it('User has virtual fullName field on create', async function() {
       const newUserNoMiddleNameUid = uniqid();
       const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
       delete userDocNoMiddleName.middleName;
       const newUser = await User.create(validUser);
       const newUserNoMiddleName = await User.create(userDocNoMiddleName);
+      expect(newUser.fullName).to.equal('John Jay Doe');
+      expect(newUserNoMiddleName.fullName).to.equal('John Doe');
+    });
+
+    it('User has virtual fullName field on query', async function() {
+      const newUserNoMiddleNameUid = uniqid();
+      const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
+      delete userDocNoMiddleName.middleName;
+      await User.create(validUser);
+      await User.create(userDocNoMiddleName);
+      const newUser = await User.findOne({ middleName: 'Jay' });
+      const newUserNoMiddleName = await User.findOne({ uid: newUserNoMiddleNameUid });
       expect(newUser.fullName).to.equal('John Jay Doe');
       expect(newUserNoMiddleName.fullName).to.equal('John Doe');
     });
