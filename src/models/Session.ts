@@ -2,7 +2,7 @@ import mongoose, { Schema, Mongoose } from 'mongoose';
 import ISession from '../interfaces/Session';
 import User from './User';
 
-const validateUid = async (uid) => {
+const validateUid = async (uid: string) => {
   if (await User.countDocuments({ uid, }) > 0) {
     return true;
   } else {

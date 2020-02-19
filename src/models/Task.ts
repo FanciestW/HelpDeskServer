@@ -12,7 +12,7 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
     type: String,
     required: true,
     validate: {
-      validator: async (uid) => {
+      validator: async (uid: string) => {
         if (await User.countDocuments({ uid, }) > 0) {
           return true;
         } else {
@@ -26,7 +26,7 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
     type: String,
     required: false,
     validate: {
-      validator: async (uid) => {
+      validator: async (uid: string) => {
         if (uid === '' || await User.countDocuments({ uid, }) > 0) {
           return true;
         } else {
@@ -41,7 +41,7 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
     required: true,
     default: 0,
     validate: {
-      validator: (priority) => {
+      validator: (priority: number) => {
         return priority >= 0 && priority <= 5;
       },
       message: 'Priority must be in the range of 0 and 5',
