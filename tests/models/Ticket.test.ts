@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import uniqid from 'uniqid';
+import nanoid from 'nanoid';
 import Ticket from '../../src/models/Ticket';
 import User from '../../src/models/User';
 import chai, { expect, assert } from 'chai';
@@ -81,7 +81,7 @@ describe('Ticket Mongoose Model', function() {
     });
 
     it('Ticket with duplicate ticketId', async function() {
-      const ticketId = uniqid();
+      const ticketId = nanoid();
       const ticketDoc = Object.assign({}, fullDetailTicket, { ticketId, });
       await Ticket.create(ticketDoc);
       return assert.isRejected(Ticket.create(ticketDoc), /.*(duplicate key error).*/);

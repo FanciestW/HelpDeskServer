@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import uniqid from 'uniqid';
+import nanoid from 'nanoid';
 import User from '../../src/models/User';
 import chai, { expect, assert } from 'chai';
 chai.use(require('chai-as-promised'));
@@ -8,7 +8,7 @@ describe('User Mongoose Model', function() {
   this.slow(1000);
   
   const validUser = {
-    uid: uniqid(),
+    uid: nanoid(),
     firstName: 'John',
     middleName: 'Jay',
     lastName: 'Doe',
@@ -69,7 +69,7 @@ describe('User Mongoose Model', function() {
     });
 
     it('User has virtual fullName field on create', async function() {
-      const newUserNoMiddleNameUid = uniqid();
+      const newUserNoMiddleNameUid = nanoid();
       const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
       delete userDocNoMiddleName.middleName;
       const newUser = await User.create(validUser);
@@ -79,7 +79,7 @@ describe('User Mongoose Model', function() {
     });
 
     it('User has virtual fullName field on query', async function() {
-      const newUserNoMiddleNameUid = uniqid();
+      const newUserNoMiddleNameUid = nanoid();
       const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
       delete userDocNoMiddleName.middleName;
       await User.create(validUser);
