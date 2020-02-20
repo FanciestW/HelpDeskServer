@@ -61,12 +61,6 @@ UserSchema.virtual('fullName').get(function() {
   } else {
     return `${this.firstName} ${this.lastName}`;
   }
-}).set(function() {
-  if(this.middleName) {
-    return `${this.firstName} ${this.middleName} ${this.lastName}`;
-  } else {
-    return `${this.firstName} ${this.lastName}`;
-  }
 });
 
 const User: Mongoose.Model<IUser> = Mongoose.model<IUser>('User', UserSchema);
