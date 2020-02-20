@@ -111,7 +111,7 @@ describe('User Mongoose Model', function() {
     });
 
     it('Duplicate Uid', async function() {
-      const firstUser = await User.create(validUser);
+      await User.create(validUser);
       return assert.isRejected(User.create(validUser), /.*(duplicate key error).*/);
     });
   });
