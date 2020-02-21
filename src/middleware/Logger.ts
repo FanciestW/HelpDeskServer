@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import winston, { createLogger, format, transports } from 'winston';
+import winston, { format } from 'winston';
 const { combine, timestamp, prettyPrint } = format;
 import logdnaWinston from 'logdna-winston';
 import os from 'os';
