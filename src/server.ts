@@ -2,7 +2,11 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 const { buildSchema } = require('graphql');
 import mongoose from 'mongoose';
+import RequestTagger from './middleware/RequestTagger';
 require('dotenv').config();
+
+const app = express();
+app.use(RequestTagger);
 
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -11,7 +15,7 @@ const mongooseOptions = {
   useCreateIndex: true,
 };
 
-const mongoUri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@helpdesk-cluster-maeej.mongodb.net/test?retryWrites=true&w=majority`;
+const mongoUri = process.env.MONGO_URI || 'localhost:27017/helpdesk';
 mongoose.connect(mongoUri, mongooseOptions, (err) => {
   if (err) {
     console.error(`Unable to connect to MongoDB with error: ${err}`);
@@ -19,8 +23,6 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
     console.log('Connected to MongoDB');
   }
 });
-
-const app = express();
 
 const schema = buildSchema(`
   type Query {
