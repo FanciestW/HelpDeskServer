@@ -3,10 +3,12 @@ import graphqlHTTP from 'express-graphql';
 const { buildSchema } = require('graphql');
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
+import Logger from './middleware/Logger';
 require('dotenv').config();
 
 const app = express();
 app.use(RequestTagger);
+app.use(Logger);
 
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -24,23 +26,27 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
   }
 });
 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+app.get('/test', (req, res) => {
+  return res.sendStatus(200);
+});
 
-const root = {
-  hello: () => {
-    return 'Hello world!';
-  },
-};
+// const schema = buildSchema(`
+//   type Query {
+//     hello: String
+//   }
+// `);
 
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
+// const root = {
+//   hello: () => {
+//     return 'Hello world!';
+//   },
+// };
+
+// app.use('/graphql', graphqlHTTP({
+//   schema: schema,
+//   rootValue: root,
+//   graphiql: true,
+// }));
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port: ${process.env.PORT || 3000}`);

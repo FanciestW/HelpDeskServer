@@ -42,7 +42,9 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.6.0",
+    "logdna-winston": "^2.3.0",
     "mongoose": "^5.8.11",
-    "nanoid": "^2.1.11"
+    "nanoid": "^2.1.11",
+    "winston": "^3.2.1"
   }
 }
