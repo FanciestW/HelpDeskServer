@@ -26,27 +26,23 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
   }
 });
 
-app.get('/test', (req, res) => {
-  return res.sendStatus(200);
-});
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
 
-// const schema = buildSchema(`
-//   type Query {
-//     hello: String
-//   }
-// `);
+const root = {
+  hello: () => {
+    return 'Hello world!';
+  },
+};
 
-// const root = {
-//   hello: () => {
-//     return 'Hello world!';
-//   },
-// };
-
-// app.use('/graphql', graphqlHTTP({
-//   schema: schema,
-//   rootValue: root,
-//   graphiql: true,
-// }));
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port: ${process.env.PORT || 3000}`);
