@@ -44,11 +44,20 @@ const logDnaOptions = {
 const logger = winston.createLogger({});
 
 logger.add(new logdnaWinston(logDnaOptions));
+logger.add(new winston.transports.Console({
+  format: winston.format.simple()
+}));
 
 export default (req: Request, _: Response, next: NextFunction) => {
   logger.info({
     message: `Request ID: ${req.headers['requestId']}`,
-    data: JSON.stringify({header: req.headers, body: req.body}),
+    data: JSON.stringify({
+      method: req.method || '',
+      header: req.headers || '',
+      body: req.body || '',
+      query: req.query || '',
+      params: req.params || ''
+    }),
   });
   next();
 };

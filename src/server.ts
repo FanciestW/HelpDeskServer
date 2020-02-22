@@ -7,6 +7,7 @@ import Logger from './middleware/Logger';
 require('dotenv').config();
 
 const app = express();
+
 app.use(RequestTagger);
 app.use(Logger);
 
@@ -34,7 +35,7 @@ const schema = buildSchema(`
 
 const root = {
   hello: () => {
-    return 'Hello world!';
+    return 'Hello World';
   },
 };
 
