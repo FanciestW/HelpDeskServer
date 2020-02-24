@@ -1,9 +1,9 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-const { buildSchema } = require('graphql');
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
 import Logger from './middleware/Logger';
+import { schema } from './schema/User';
 require('dotenv').config();
 
 const app = express();
@@ -27,21 +27,8 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
   }
 });
 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
-
-const root = {
-  hello: () => {
-    return 'Hello World';
-  },
-};
-
 app.use('/graphql', graphqlHTTP({
   schema: schema,
-  rootValue: root,
   graphiql: true,
 }));
 

@@ -44,9 +44,9 @@ const logDnaOptions = {
 const logger = winston.createLogger({});
 
 logger.add(new logdnaWinston(logDnaOptions));
-logger.add(new winston.transports.Console({
-  format: winston.format.simple()
-}));
+// logger.add(new winston.transports.Console({
+//   format: winston.format.simple()
+// }));
 
 export default (req: Request, _: Response, next: NextFunction) => {
   logger.info({
