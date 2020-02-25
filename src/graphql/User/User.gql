@@ -1,0 +1,18 @@
+type User {
+  uid: ID,
+  firstName: String,
+  middleName: String,
+  lastName: String,
+  fullName: String,
+  createdAt: String,
+  email: String,
+  passwordDigest: String,
+  phone: String,
+  company: String,
+  isTechnician: Boolean
+}
+
+type Query {
+  getAllUser: [User]
+  getUserByUid(uid: ID!): User
+}

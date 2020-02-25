@@ -3,7 +3,7 @@ import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
 import Logger from './middleware/Logger';
-import { schema } from './schema/User';
+import AllResolver from './graphql/AllResolver';
 require('dotenv').config();
 
 const app = express();
@@ -29,6 +29,7 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
+  rootValue: AllResolver,
   graphiql: true,
 }));
 
