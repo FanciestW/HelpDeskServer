@@ -1,5 +1,5 @@
 import { mergeResolvers } from 'merge-graphql-schemas';
-import { UserResolver } from './User/Resolver';
+import { UserResolver } from './User/UserResolver';
  
 const resolvers = [
   UserResolver,

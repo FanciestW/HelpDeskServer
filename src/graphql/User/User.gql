@@ -9,10 +9,16 @@ type User {
   passwordDigest: String,
   phone: String,
   company: String,
-  isTechnician: Boolean
+  isTechnician: Boolean,
 }
 
 type Query {
-  getAllUser: [User]
+  getAllUsers: [User]
   getUserByUid(uid: ID!): User
+}
+
+type Mutation {
+  newUser(
+    uid?: String
+  ): User
 }
