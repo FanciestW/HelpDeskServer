@@ -15,12 +15,15 @@ export const UserResolver = {
     },
     updateUser: async (_, args) => {
       return User.findOneAndUpdate({ uid: args.uid }, args, { new: true, upsert: true, });
-    }
+    },
+    deleteUser: async (_, args) => {
+      return await User.deleteOne({ uid: args.uid });
+    },
   },
   User: {
     createdAt: (obj) => {
       const date: Date = obj.createdAt;
       return date.toISOString();
-    }
+    },
   }
 };
