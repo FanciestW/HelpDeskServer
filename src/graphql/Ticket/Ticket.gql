@@ -11,20 +11,34 @@ type Ticket {
 }
 
 type Query {
+  getATicket(ticketId: ID!): Ticket
   getUserTickets(uid: ID!): [Ticket]
   getUserAssignedTickets(uid: ID!): [Ticket]
   getUserCreatedTickets(uid: ID!): [Ticket]
+  getUserArchivedTickets(uid: ID!): [Ticket]
 }
 
 type Mutation {
   newTicket(
+    title: String!,
+    description: String,
+    createdBy: String!,
+    assignedTo: String,
+    status: String,
+    priority: Int!,
+    createdAt: String,
+    dueDate: String,
+  ): Ticket
+  updateTicket(
+    ticketId: ID!,
     title: String,
     description: String,
-    createdBy: User,
-    assignedTo: User,
+    createdBy: String,
+    assignedTo: String,
     status: String,
     priority: Int,
     createdAt: String,
     dueDate: String,
   ): Ticket
+  deleteTicket(ticketId: String!, mark: Boolean): Ticket
 }

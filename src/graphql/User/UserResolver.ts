@@ -16,7 +16,7 @@ export const UserResolver = {
       return await User.create(newUserObj);
     },
     updateUser: async (_, args) => {
-      return User.findOneAndUpdate({ uid: args.uid }, args, { new: true, upsert: true, });
+      return User.findOneAndUpdate({ uid: args.uid }, args, { new: true });
     },
     deleteUser: async (_, args) => {
       return await User.deleteOne({ uid: args.uid });

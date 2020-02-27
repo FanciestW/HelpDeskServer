@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import ITicket from '../interfaces/Ticket';
 import User from './User';
 
-const allowedStatuses = ['new', 'low', 'med', 'high'];
+const allowedStatuses = ['new', 'low', 'med', 'high', 'deleted', 'archived'];
 
 const validateUserExists = async (uid: string) => {
   if (uid === '') {
