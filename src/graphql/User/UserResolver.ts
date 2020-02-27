@@ -1,3 +1,4 @@
+import nanoid from 'nanoid';
 import User from '../../models/User';
 
 export const UserResolver = {
@@ -11,7 +12,8 @@ export const UserResolver = {
   },
   Mutation: {
     newUser: async (_, args) => {
-      return await User.create(args);
+      const newUserObj = Object.assign({ uid: nanoid(), args });
+      return await User.create(newUserObj);
     },
     updateUser: async (_, args) => {
       return User.findOneAndUpdate({ uid: args.uid }, args, { new: true, upsert: true, });

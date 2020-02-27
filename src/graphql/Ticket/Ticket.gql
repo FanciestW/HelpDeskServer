@@ -1,0 +1,30 @@
+type Ticket {
+  ticketId: ID,
+  title: String,
+  description: String,
+  createdBy: User,
+  assignedTo: User,
+  status: String,
+  priority: Int,
+  createdAt: String,
+  dueDate: String,
+}
+
+type Query {
+  getUserTickets(uid: ID!): [Ticket]
+  getUserAssignedTickets(uid: ID!): [Ticket]
+  getUserCreatedTickets(uid: ID!): [Ticket]
+}
+
+type Mutation {
+  newTicket(
+    title: String,
+    description: String,
+    createdBy: User,
+    assignedTo: User,
+    status: String,
+    priority: Int,
+    createdAt: String,
+    dueDate: String,
+  ): Ticket
+}
