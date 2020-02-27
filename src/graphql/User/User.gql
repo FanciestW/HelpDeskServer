@@ -42,4 +42,7 @@ type Mutation {
     company: String,
     isTechnician: Boolean,
   ): User
+  deleteUser(
+    uid: ID!
+  ) : User
 }
