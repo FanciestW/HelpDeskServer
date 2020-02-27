@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
@@ -25,15 +25,15 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 });
 
 const app = express();
-const schema = makeExecutableSchema({ typeDefs, resolvers, });
 
+app.use(RequestTagger);
+app.use(Logger);
+
+const schema = makeExecutableSchema({ typeDefs, resolvers, });
 app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true,
 }));
-
-app.use(RequestTagger);
-app.use(Logger);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port: ${process.env.PORT || 3000}`);
