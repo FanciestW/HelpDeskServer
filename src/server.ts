@@ -1,7 +1,10 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import bodyParser from 'body-parser';
+// import cookieParser from 'cookie-parser';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
+import SessionRoute from './routes/Session';
 import Logger from './middleware/Logger';
 import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
@@ -25,12 +28,15 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 });
 
 const app = express();
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+// app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+app.use('/api/session', SessionRoute);
 
 const schema = makeExecutableSchema({ typeDefs, resolvers, });
-app.use('/graphql', graphqlHTTP({
+app.use('/api/graphql', graphqlHTTP({
   schema,
   graphiql: true,
 }));

@@ -57,7 +57,7 @@ export default (req: Request, _: Response, next: NextFunction) => {
       body: req.body || '',
       query: req.query || '',
       params: req.params || ''
-    }),
+    }, null, 2),
   });
   next();
 };
