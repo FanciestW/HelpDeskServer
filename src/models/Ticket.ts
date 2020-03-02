@@ -68,13 +68,6 @@ export const TicketSchema: Schema<ITicket> = new Schema<ITicket>({
   dueDate: { type: Date, required: false, default: Date.now },
 });
 
-TicketSchema.pre('save', function (next) {
-  if (this.get('createdBy')) {
-    this.set({ assignedTo: this.get('createdBy') });
-  }
-  next();
-});
-
 TicketSchema.virtual('overdue', {
   type: Boolean,
 }).get(function() {
