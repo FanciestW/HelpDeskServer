@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-// import cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
@@ -30,7 +30,7 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
+app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
 app.use('/api/session', SessionRoute);
