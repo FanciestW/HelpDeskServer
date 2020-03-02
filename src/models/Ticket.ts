@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import ITicket from '../interfaces/Ticket';
 import User from './User';
 
+const allowedStatuses = ['new', 'low', 'med', 'high', 'deleted', 'archived'];
+
 const validateUserExists = async (uid: string) => {
   if (uid === '') {
     return true;
@@ -12,7 +14,7 @@ const validateUserExists = async (uid: string) => {
   }
 };
 
-export const TicketSchema: Schema = new Schema({
+export const TicketSchema: Schema<ITicket> = new Schema<ITicket>({
   ticketId: { type: String, required: true, unique: true },
   title: {
     type: String,
@@ -37,6 +39,39 @@ export const TicketSchema: Schema = new Schema({
     validate: validateUserExists,
     message: 'Invalid User',
   },
+  status: {
+    type: String,
+    required: false,
+    default: 'new',
+    validate: {
+      validator: (stat) => {
+        if (allowedStatuses.includes(stat)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  },
+  priority: {
+    type: Number,
+    required: true,
+    default: 0,
+    validate: {
+      validator: (priority: number) => {
+        return priority >= 0 && priority <= 5;
+      },
+      message: 'Priority must be in the range of 0 and 5',
+    }
+  },
+  createdAt: { type: Date, required: false, default: Date.now },
+  dueDate: { type: Date, required: false, default: Date.now },
+});
+
+TicketSchema.virtual('overdue', {
+  type: Boolean,
+}).get(function() {
+  return Date.now > this.dueDate;
 });
 
 const Ticket: mongoose.Model<ITicket> = mongoose.model<ITicket>('Ticket', TicketSchema);

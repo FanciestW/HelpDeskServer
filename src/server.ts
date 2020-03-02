@@ -1,15 +1,15 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import graphqlHTTP from 'express-graphql';
-const { buildSchema } = require('graphql');
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
+import SessionRoute from './routes/Session';
 import Logger from './middleware/Logger';
+import typeDefs from './graphql/Schema';
+import resolvers from './graphql/AllResolver';
+import { makeExecutableSchema } from 'graphql-tools';
 require('dotenv').config();
-
-const app = express();
-
-app.use(RequestTagger);
-app.use(Logger);
 
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -18,7 +18,7 @@ const mongooseOptions = {
   useCreateIndex: true,
 };
 
-const mongoUri = process.env.MONGO_URI || 'localhost:27017/helpdesk';
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/helpdesk';
 mongoose.connect(mongoUri, mongooseOptions, (err) => {
   if (err) {
     console.error(`Unable to connect to MongoDB with error: ${err}`);
@@ -27,21 +27,17 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
   }
 });
 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
+app.use(RequestTagger);
+app.use(Logger);
+app.use('/api/session', SessionRoute);
 
-const root = {
-  hello: () => {
-    return 'Hello World';
-  },
-};
-
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
+const schema = makeExecutableSchema({ typeDefs, resolvers, });
+app.use('/api/graphql', graphqlHTTP({
+  schema,
   graphiql: true,
 }));
 

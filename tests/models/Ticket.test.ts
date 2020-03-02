@@ -9,11 +9,13 @@ describe('Ticket Mongoose Model', function() {
   this.slow(1000);
   
   const fullDetailTicket = {
-    ticketId: uniqid.time(),
+    ticketId: nanoid(),
     title: 'Test Ticket',
     description: 'Test this new ticket',
     assignedTo: '001',
-    createdBy: '002'
+    createdBy: '002',
+    status: 'med',
+    priority: 1,
   };
 
   before(async function() {

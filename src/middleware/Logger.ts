@@ -43,7 +43,7 @@ const logDnaOptions = {
 
 const logger = winston.createLogger({});
 
-logger.add(new logdnaWinston(logDnaOptions));
+// logger.add(new logdnaWinston(logDnaOptions));
 logger.add(new winston.transports.Console({
   format: winston.format.simple()
 }));
@@ -57,7 +57,7 @@ export default (req: Request, _: Response, next: NextFunction) => {
       body: req.body || '',
       query: req.query || '',
       params: req.params || ''
-    }),
+    }, null, 2),
   });
   next();
 };
