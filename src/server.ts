@@ -28,13 +28,19 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 });
 
 const app = express();
+
+// Express Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+
+// Express Routes
 app.use('/api/session', SessionRoute);
 
+
+// GraphQL
 const schema = makeExecutableSchema({ typeDefs, resolvers, });
 app.use('/api/graphql', graphqlHTTP({
   schema,

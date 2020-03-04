@@ -3,10 +3,10 @@ import { RequestHandler, Request, Response, NextFunction } from 'express';
 export default (types: Object): RequestHandler => {
   return function(req: Request, res: Response, next: NextFunction) {
     res.locals.body = {};
-    Object.keys(types).forEach((key) => {
-      const reqObj = req.body[key];
-      if (typeof reqObj === types[key]) { 
-        res.locals.body[key] = reqObj;
+    Object.keys(types).forEach(([key, type]) => {
+      const weakObj = req.body?.[key];
+      if (weakObj && typeof weakObj === type) { 
+        res.locals.body[key] = weakObj;
       }
     });
     delete req.body;
