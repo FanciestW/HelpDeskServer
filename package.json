@@ -19,6 +19,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/FanciestW/helpdeskserver#readme",
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.9",
     "@types/chai-as-promised": "^7.1.2",
     "@types/express": "^4.17.2",
@@ -26,6 +27,7 @@
     "@types/mocha": "^7.0.1",
     "@types/mongodb": "^3.3.15",
     "@types/mongoose": "^5.7.0",
+    "@types/nanoid": "^2.1.0",
     "@types/node": "^13.7.2",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
