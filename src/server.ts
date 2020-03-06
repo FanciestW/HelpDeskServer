@@ -39,7 +39,6 @@ app.use(Logger);
 // Express Routes
 app.use('/api/session', SessionRoute);
 
-
 // GraphQL
 const schema = makeExecutableSchema({ typeDefs, resolvers, });
 app.use('/api/graphql', graphqlHTTP({

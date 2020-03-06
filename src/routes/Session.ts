@@ -55,11 +55,17 @@ router.post('/signup', StrongParam(signUpStrongParams), async (_, res: Response)
       company,
       isTechnician
     } = res.locals.body;
+    let uid: string;
+    do {
+      uid = nanoid(14);
+    } while (await User.findOne({ uid, }));
+    const passwordDigest = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
     const newUser = await new User({
+      uid,
       firstName,
       lastName,
       middleName,
-      password,
+      passwordDigest,
       email,
       phone,
       company,
@@ -69,13 +75,14 @@ router.post('/signup', StrongParam(signUpStrongParams), async (_, res: Response)
       let sid = '';
       do {
         sid = nanoid();
-      } while (!(await Session.findOne({ sid, })));
+      } while (await Session.findOne({ sid, }));
       await new Session({ uid: newUser.uid, sid }).save();
       return res.status(200).cookie('session', sid, { maxAge: 86400000 }).send(newUser);
     } else {
       throw new Error('Unable to create new User');
     }
   } catch (err) {
+    console.log(err);
     return res.sendStatus(500);
   }
 });
