@@ -3,7 +3,6 @@ import express, { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
 import nanoid from 'nanoid';
 import StrongParams from '../middleware/StrongParam';
-import StrongParam from '../middleware/StrongParam';
 import User from '../models/User';
 import Session from '../models/Session';
 const router = express.Router();
@@ -45,7 +44,7 @@ const signUpStrongParams = {
   company: 'string',
   isTechnician: 'boolean'
 };
-router.post('/signup', StrongParam(signUpStrongParams), async (_, res: Response) => {
+router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response) => {
   try {
     const {
       firstName,
