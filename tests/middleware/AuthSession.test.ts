@@ -43,7 +43,7 @@ describe('Session Authentication Middleware Test', function () {
       const next = sinon.spy();
       AuthSessionMiddlware(request, response, next);
       expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.equal(Error('Unable to authenticate user session'));
+      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
     });
   });
 });
