@@ -107,7 +107,7 @@ describe('User Mongoose Model', function() {
     it('Plain text password', function() {
       const plaintextUser = Object.assign({}, validUser, { passwordDigest: 'password' });
       const userPromise = User.create(plaintextUser);
-      return assert.isRejected(userPromise, /PasswordDigest is invalid$/);
+      return assert.isRejected(userPromise, /is invalid$/);
     });
 
     it('Duplicate Uid', async function() {
