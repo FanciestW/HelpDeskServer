@@ -1,6 +1,5 @@
 import Mongoose, { Schema } from 'mongoose';
 import IUser from '../interfaces/User';
-import bcrypt from 'bcrypt';
 
 export const UserSchema: Schema<IUser> = new Schema<IUser>({
   uid: { type: String, required: true, unique: true },
