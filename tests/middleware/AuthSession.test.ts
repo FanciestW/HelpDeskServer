@@ -32,6 +32,12 @@ describe('Session Authentication Middleware Test', function () {
     await Session.deleteMany({});
   });
 
+  after(async function() {
+    await User.deleteMany({});
+    await Session.deleteMany({});
+    await Mongoose.disconnect();
+  });
+
   context('Valid Sessions', function() {
     it('Normal Session', async function() {
       const { sid } = await Session.create({
