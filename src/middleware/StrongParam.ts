@@ -5,7 +5,7 @@ export default (types: Object): RequestHandler => {
     res.locals.body = {};
     Object.entries(types).forEach(([key, type]) => {
       const weakObj = req.body?.[key];
-      if (weakObj && typeof weakObj === type) { 
+      if (type !== 'object' && weakObj && typeof weakObj === type) { 
         res.locals.body[key] = weakObj;
       }
     });
