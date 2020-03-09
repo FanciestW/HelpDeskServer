@@ -24,7 +24,7 @@ export const SessionSchema: Schema = new Schema({
   expiresAt: { type: Date, required: true, default: Date.now() + 86400 * 1000, expires: 86400 },
 });
 
-SessionSchema.pre('save', async function(next) {
+SessionSchema.pre<ISession>('save', async function(next) {
   const uid = this.get('uid');
   const userSessions = await Session.countDocuments({ uid, });
   if (userSessions >= 10) {

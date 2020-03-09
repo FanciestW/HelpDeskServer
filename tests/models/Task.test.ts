@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import uniqid from 'uniqid';
+import nanoid from 'nanoid';
 import Task from '../../src/models/Task';
 import User from '../../src/models/User';
 import Ticket from '../../src/models/Ticket';
@@ -10,7 +10,7 @@ describe('Task Mongoose Model Test', function () {
   this.slow(1000);
 
   const validTask = {
-    taskId: uniqid(),
+    taskId: nanoid(),
     title: 'Unit Test',
     description: 'Write unit tests',
     relatedTickets: ['ticket001'],

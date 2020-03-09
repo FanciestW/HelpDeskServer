@@ -12,7 +12,8 @@
         "esModuleInterop": true
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "src/**/*.gql"
     ],
     "exclude": [
         "node_modules"

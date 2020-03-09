@@ -32,7 +32,7 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
       validator: (digest: string) => {
         return digest.startsWith('$2') && digest.length >= 60;
       },
-      message: 'PasswordDigest is invalid',
+      message: props => `PasswordDigest: ${props.value} is invalid`,
     }
   },
   phone: {
@@ -55,8 +55,8 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
   isTechnician: { type: Boolean, required: true, default: false },
 });
 
-UserSchema.virtual('fullName').get(function() {
-  if(this.middleName) {
+UserSchema.virtual('fullName').get(function () {
+  if (this.middleName) {
     return `${this.firstName} ${this.middleName} ${this.lastName}`;
   } else {
     return `${this.firstName} ${this.lastName}`;

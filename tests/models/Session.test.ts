@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import uniqid from 'uniqid';
+import nanoid from 'nanoid';
 import Session, { SessionSchema } from '../../src/models/Session';
 import User from '../../src/models/User';
 import chai, { assert, expect } from 'chai';
@@ -9,7 +9,7 @@ describe('Session Mongoose Model Tests', function () {
   this.slow(1000);
   
   const validSession = {
-    sid: uniqid(),
+    sid: nanoid(),
     uid: 'user001',
     createdAt: Date.now(),
     expiresAt: Date.now() + 86400 * 1000,
@@ -61,7 +61,7 @@ describe('Session Mongoose Model Tests', function () {
     });
 
     it('Two Sessions for Same User', async function() {
-      const session2Doc = Object.assign({}, validSession, { sid: uniqid() });
+      const session2Doc = Object.assign({}, validSession, { sid: nanoid() });
       const session1 = await Session.create(validSession);
       const session2 = await Session.create(session2Doc);
       const now = new Date().getTime() + 86400 * 1000;
@@ -80,7 +80,7 @@ describe('Session Mongoose Model Tests', function () {
 
     it('Making 11 Sessions for single user', async function() {
       for (let i = 0; i < 10; i+=1) {
-        const sessionDoc = Object.assign({}, validSession, { sid: uniqid() });
+        const sessionDoc = Object.assign({}, validSession, { sid: nanoid() });
         await Session.create(sessionDoc);
       }
       return assert.isRejected(Session.create(validSession), /.*(Too many sessions).*/);
