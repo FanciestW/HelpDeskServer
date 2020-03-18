@@ -4,26 +4,19 @@ import bcrypt from 'bcrypt';
 import nanoid from 'nanoid';
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
-import Session from '../models/Session';
+import { createSession, deleteSession } from '../utils/SessionHelper';
 const router = express.Router();
-
-router.post('/logout', async (req: Request, res: Response) => {
-  const sid = req.signedCookies?.session;
-  if (sid) {
-    await Session.findOneAndDelete({ sid, });
-  }
-  return res.clearCookie('session').sendStatus(200);
-});
 
 const loginStrongParams = {
   email: 'string',
-  password: 'string'
+  password: 'string',
 };
-router.post('/login', StrongParams(loginStrongParams), async (_, res: Response) => {
+
+router.post('/login', [StrongParams(loginStrongParams)], async (req: Request, res: Response) => {
   try {
     const { email, password } = res.locals.body;
     const user = await User.findOne({ email });
-    if (await bcrypt.compare(password, user.passwordDigest)) {
+    if (user && await bcrypt.compare(password, user.passwordDigest)) {
       const sid = await createSession(user.uid);
       return res.cookie('session', sid, { maxAge: 86400000, signed: true, httpOnly: true }).sendStatus(200);
     } else {
@@ -79,18 +72,16 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
       throw new Error('Unable to create new User');
     }
   } catch (err) {
-    console.log(err);
-    return res.sendStatus(500);
+    return res.sendStatus(400);
   }
 });
 
-async function createSession(uid: string): Promise<string> {
-  let sid;
-  do {
-    sid = nanoid();
-  } while (await Session.findOne({ sid, }));
-  await new Session({ uid, sid }).save();
-  return sid;
-}
+router.post('/logout', async (req: Request, res: Response) => {
+  const sid = req.signedCookies?.session;
+  if (sid) {
+    await deleteSession(sid);
+  }
+  return res.clearCookie('session').sendStatus(200);
+});
 
 export default router;

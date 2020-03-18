@@ -39,7 +39,12 @@
     },
     "overrides": [
     {
-      "files": ["**/models/*.ts", "**/interfaces/*.ts", "**/middleware/*.ts"],
+      "files": [
+          "**/models/*.ts",
+          "**/interfaces/*.ts",
+          "**/middleware/*.ts",
+          "**/routes/*.ts"
+        ],
       "rules": {
         "no-unused-vars": ["off"],
         "no-undef": ["off"]
