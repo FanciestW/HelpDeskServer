@@ -43,7 +43,7 @@
           "**/models/*.ts",
           "**/interfaces/*.ts",
           "**/middleware/*.ts",
-          "**/routes/*.ts"
+          "**/utils/*.ts"
         ],
       "rules": {
         "no-unused-vars": ["off"],
