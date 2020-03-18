@@ -1,22 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import Session from '../models/Session';
+import { validateSession } from '../utils/SessionHelper';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   if (req.signedCookies?.session) {
     const sid = req.signedCookies.session;
-    const userSession = await Session.findOne({
-      $and: [
-        { sid },
-        { expiresAt: { $gt: new Date() } },
-      ]
-    });
-    if (userSession) {
+    if (await validateSession(sid)) {
       res.locals.sessionCookie = sid;
       return next();
     } else {
-      return next(new Error('Unable to authenticate user session'));
+      return res.sendStatus(400);
     }
   } else {
-    return next(new Error('Unable to authenticate user session'));
+    return res.sendStatus(400);
   }
 };

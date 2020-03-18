@@ -9,6 +9,7 @@ import Logger from './middleware/Logger';
 import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
+import AuthSession from './middleware/AuthSession';
 require('dotenv').config();
 
 const mongooseOptions = {
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+app.use('/api/graphql', AuthSession);
 
 // Express Routes
 app.use('/api/user', UserRoute);

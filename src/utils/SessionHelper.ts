@@ -27,3 +27,17 @@ export async function deleteSession(sid: string): Promise<ISession> {
   const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
   return await Session.findOneAndDelete({ sid: hashedSid });
 }
+
+export async function validateSession(sid: string): Promise<Boolean> {
+  const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
+  if (await Session.findOne({
+    $and: [
+      { sid: hashedSid },
+      { expiresAt: { $gt: new Date() } },
+    ]
+  })) {
+    return true;
+  } else {
+    return false;
+  }
+}
