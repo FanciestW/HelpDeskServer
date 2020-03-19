@@ -49,6 +49,9 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
       company,
       isTechnician
     } = res.locals.body;
+    if (await User.findOne({ email, })) {
+      throw new Error(`User with email: ${email} already exists`);
+    }
     let uid: string;
     do {
       uid = nanoid(14);
