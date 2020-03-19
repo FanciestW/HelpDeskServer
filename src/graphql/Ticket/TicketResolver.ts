@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
-import { getUserFromSession, getUidFromSession } from '../../utils/SessionHelper';
+import { getUidFromSession } from '../../utils/SessionHelper';
 
 export const TicketResolver = {
   Query: {
@@ -44,15 +44,27 @@ export const TicketResolver = {
         dueDate,
       });
     },
-    updateTicket: async (_, args) => {
-      return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { args }, { new: true });
+    updateTicket: async (_, args, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const { ticketId, title, description, assignedTo, status, priority, dueDate } = args;
+      return await Ticket.findOneAndUpdate({ ticketId }, {
+        title,
+        description,
+        assignedTo,
+        status,
+        priority,
+        dueDate,
+      }, { new: true });
     },
-    deleteTicket: async(_, args) => {
-      const mark = args.mark || true;
+    deleteTicket: async(_, args, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const { mark = true, ticketId } = args;
       if (mark) {
-        return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { status: 'deleted' });
+        return await Ticket.findOneAndUpdate({ ticketId }, { status: 'deleted' });
       } else {
-        return await Ticket.deleteOne({ ticketId: args.ticketId });
+        return await Ticket.deleteOne({ ticketId });
       }
     }
   },
