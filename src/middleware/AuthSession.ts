@@ -8,9 +8,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       res.locals.sessionCookie = sid;
       return next();
     } else {
-      return res.sendStatus(400);
+      return res.sendStatus(401);
     }
   } else {
-    return res.sendStatus(400);
+    return res.sendStatus(401);
   }
 };
