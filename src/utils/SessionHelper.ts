@@ -32,7 +32,7 @@ export async function deleteSession(sid: string): Promise<ISession> {
 
 export async function validateSession(sid: string): Promise<Boolean> {
   const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
-  if (await Session.findOne({
+  if (await Session.exists({
     $and: [
       { sid: hashedSid },
       { expiresAt: { $gt: new Date() } },
@@ -46,7 +46,7 @@ export async function validateSession(sid: string): Promise<Boolean> {
 
 /**
  * Given an un-hashed session ID, hash it and retrieve the user object associated with it.
- * @param sid The un-hashed SID to delete from the database.
+ * @param sid The un-hashed SID to search with.
  * @returns Promise<IUser> with the User object that is associated with the session.
  */
 export async function getUserFromSession(sid: string): Promise<IUser> {
@@ -56,9 +56,29 @@ export async function getUserFromSession(sid: string): Promise<IUser> {
       { sid: hashedSid },
       { expiresAt: { $gt: new Date() } },
     ]
-  });
+  }).select('uid');
   if (sessionObj?.uid) {
     return await User.findOne({ uid: sessionObj.uid });
+  } else {
+    return undefined;
+  }
+}
+
+/**
+ * Given an un-hashed session ID, hash it and retrieve the user ID associated with it.
+ * @param sid The un-hashed SID to search with.
+ * @returns Promise<String> containing the UID found, undefined if nothing is found.
+ */
+export async function getUidFromSession(sid: string): Promise<String> {
+  const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
+  const sessionObj = await Session.findOne({
+    $and: [
+      { sid: hashedSid },
+      { expiresAt: { $gt: new Date() } },
+    ]
+  }).select('uid');
+  if (sessionObj?.uid) {
+    return sessionObj.uid;
   } else {
     return undefined;
   }

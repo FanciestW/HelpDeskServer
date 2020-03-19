@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
-import { getUserFromSession } from '../../utils/SessionHelper';
+import { getUserFromSession, getUidFromSession } from '../../utils/SessionHelper';
 
 export const TicketResolver = {
   Query: {
@@ -29,14 +29,14 @@ export const TicketResolver = {
   },
   Mutation: {
     newTicket: async (_, args, request: Request) => {
-      const user = await getUserFromSession(request.signedCookies?.session);
-      if (!user) return new Error('Unauthorized');
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, createdAt, dueDate } = args;
       return await Ticket.create({
         ticketId: nanoid(),
         title,
         description,
-        createdBy: user?.uid,
+        createdBy: uid,
         assignedTo,
         status,
         priority,
