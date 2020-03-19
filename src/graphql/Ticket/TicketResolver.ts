@@ -1,6 +1,8 @@
+import { Request, Response } from 'express';
 import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
+import { getUserFromSession } from '../../utils/SessionHelper';
 
 export const TicketResolver = {
   Query: {
@@ -26,9 +28,21 @@ export const TicketResolver = {
     }
   },
   Mutation: {
-    newTicket: async (_, args) => {
-      const newTicketObj = Object.assign({ ticketId: nanoid() }, args);
-      return await Ticket.create(newTicketObj);
+    newTicket: async (_, args, request: Request) => {
+      const user = await getUserFromSession(request.signedCookies?.session);
+      if (!user) return new Error('Unauthorized');
+      const { title, description, assignedTo, status, priority, createdAt, dueDate } = args;
+      return await Ticket.create({
+        ticketId: nanoid(),
+        title,
+        description,
+        createdBy: user?.uid,
+        assignedTo,
+        status,
+        priority,
+        createdAt,
+        dueDate,
+      });
     },
     updateTicket: async (_, args) => {
       return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { args }, { new: true });
