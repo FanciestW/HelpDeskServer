@@ -73,6 +73,11 @@ export const TicketResolver = {
         dueDate,
       }, { new: true });
     },
+    archiveTicket: async (_: any, args: { ticketId: string; }, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { status: 'archived' }, { new: true});
+    },
     deleteTicket: async(_: any, args: { mark?: boolean; ticketId: string; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');

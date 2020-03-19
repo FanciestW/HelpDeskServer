@@ -38,5 +38,6 @@ type Mutation {
     priority: Int,
     dueDate: String,
   ): Ticket
+  archiveTicket(ticketId: String!): Ticket
   deleteTicket(ticketId: String!, mark: Boolean): Ticket
 }
