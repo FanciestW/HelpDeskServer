@@ -12,7 +12,7 @@ type Ticket {
 
 type Query {
   getATicket(ticketId: ID!): Ticket
-  getUserTickets(uid: ID!): [Ticket]
+  getUserTickets: [Ticket]
   getUserAssignedTickets(uid: ID!): [Ticket]
   getUserCreatedTickets(uid: ID!): [Ticket]
   getUserArchivedTickets(uid: ID!): [Ticket]
