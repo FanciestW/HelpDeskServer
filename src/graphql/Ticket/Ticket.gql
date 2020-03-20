@@ -23,11 +23,9 @@ type Mutation {
   newTicket(
     title: String!,
     description: String,
-    createdBy: String,
     assignedTo: String,
     status: String,
     priority: Int!,
-    createdAt: String,
     dueDate: String,
   ): Ticket
   updateTicket(

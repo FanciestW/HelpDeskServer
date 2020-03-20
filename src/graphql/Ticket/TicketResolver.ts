@@ -57,7 +57,7 @@ export const TicketResolver = {
     newTicket: async (_: any, args: ITicket, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      const { title, description, assignedTo, status, priority, createdAt, dueDate } = args;
+      const { title, description, assignedTo, status, priority, dueDate } = args;
       return await Ticket.create({
         ticketId: nanoid(),
         title,
@@ -66,7 +66,6 @@ export const TicketResolver = {
         assignedTo,
         status,
         priority,
-        createdAt,
         dueDate,
       });
     },
