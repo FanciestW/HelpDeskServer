@@ -8,6 +8,7 @@ interface ITask extends Document {
     relatedTickets: Array<string>;
     createdBy: string;
     assignedTo: string;
+    status: string;
     priority: number;
     createdAt: Date;
     dueDate: Date;

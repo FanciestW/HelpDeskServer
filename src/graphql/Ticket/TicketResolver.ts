@@ -103,8 +103,8 @@ export const TicketResolver = {
       const date: Date = obj.createdAt;
       return date.toISOString();
     },
-    dueDate: (obj: { createdAt: Date; }) => {
-      const date: Date = obj.createdAt;
+    dueDate: (obj: { dueDate: Date; }) => {
+      const date: Date = obj.dueDate;
       return date.toISOString();
     },
     createdBy: async (obj: { createdBy: string; }) => {

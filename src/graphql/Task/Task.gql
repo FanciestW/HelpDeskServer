@@ -1,7 +1,9 @@
 type Task {
-  ticketId: String
+  taskId: String
   title: String
   description: String
+  subtasks: [String]
+  relatedTickets: [String]
   createdBy: User
   assignedTo: User
   status: String
