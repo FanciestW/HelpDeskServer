@@ -17,22 +17,22 @@ export const TicketResolver = {
         { $or: [{ createdBy: uid }, { assignedTo: uid }], }
       ]});
     },
-    getUserTickets: async (_: any, _args: any, request: Request) => {
+    getTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({ $or: [{createdBy: uid}, {assignedTo: uid}] });
     },
-    getUserAssignedTickets: async (_: any, _args: any, request: Request) => {
+    getAssignedTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({ assignedTo: uid });
     },
-    getUserCreatedTickets: async (_: any, _args: any, request: Request) => {
+    getCreatedTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({ createdBy: uid });
     },
-    getUserArchivedTickets: async(_: any, _args: any, request: Request) => {
+    getArchivedTickets: async(_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({
@@ -41,7 +41,17 @@ export const TicketResolver = {
           { status: 'archived' }
         ]
       });
-    }
+    },
+    getDeletedTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+          { status: 'deleted' }
+        ]
+      });
+    },
   },
   Mutation: {
     newTicket: async (_: any, args: ITicket, request: Request) => {

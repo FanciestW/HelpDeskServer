@@ -12,10 +12,11 @@ type Ticket {
 
 type Query {
   getATicket(ticketId: ID!): Ticket
-  getUserTickets: [Ticket]
-  getUserAssignedTickets(uid: ID!): [Ticket]
-  getUserCreatedTickets(uid: ID!): [Ticket]
-  getUserArchivedTickets(uid: ID!): [Ticket]
+  getTickets: [Ticket]
+  getAssignedTickets: [Ticket]
+  getCreatedTickets: [Ticket]
+  getArchivedTickets: [Ticket]
+  getDeletedTickets: [Ticket]
 }
 
 type Mutation {
