@@ -24,12 +24,22 @@ export const TaskResolver = {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Task.find({
-        $or: [
-          { createdBy: uid },
-          { assignedTo: uid },
+        $and: [
+          {
+            $and: [
+              { status: { $ne: 'deleted' }},
+              { status: { $ne: 'archived' }},
+            ]
+          },
+          {
+            $or: [
+              { createdBy: uid },
+              { assignedTo: uid },
+            ]
+          },
         ]
       });
-    }
+    },
   },
   Mutation: {
     newTask: async (_: any, args: ITask, request: Request) => {
