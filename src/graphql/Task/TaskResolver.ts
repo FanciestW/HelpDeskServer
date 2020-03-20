@@ -25,12 +25,7 @@ export const TaskResolver = {
       if (!uid) return new Error('Unauthorized');
       return await Task.find({
         $and: [
-          {
-            $and: [
-              { status: { $ne: 'deleted' }},
-              { status: { $ne: 'archived' }},
-            ]
-          },
+          { status: { $nin: ['archived', 'deleted'] } },
           {
             $or: [
               { createdBy: uid },
@@ -40,6 +35,22 @@ export const TaskResolver = {
         ]
       });
     },
+    getAssignedTasks: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Task.find({ $and: [ 
+        { status: { $nin: ['archived', 'deleted'] }},
+        { assignedTo: uid },
+      ]});
+    },
+    getCreatedTasks: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Task.find({ $and: [ 
+        { status: { $nin: ['archived', 'deleted'] }},
+        { createdBy: uid },
+      ]});
+    }
   },
   Mutation: {
     newTask: async (_: any, args: ITask, request: Request) => {

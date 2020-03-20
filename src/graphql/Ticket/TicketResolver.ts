@@ -40,12 +40,18 @@ export const TicketResolver = {
     getAssignedTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      return await Ticket.find({ assignedTo: uid });
+      return await Ticket.find({ $and: [ 
+        { status: { $nin: ['archived', 'deleted'] }},
+        { assignedTo: uid },
+      ]});
     },
     getCreatedTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      return await Ticket.find({ createdBy: uid });
+      return await Ticket.find({ $and: [ 
+        { status: { $nin: ['archived', 'deleted'] }},
+        { createdBy: uid },
+      ]});
     },
     getArchivedTickets: async(_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
