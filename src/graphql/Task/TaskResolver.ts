@@ -39,18 +39,34 @@ export const TaskResolver = {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Task.find({ $and: [ 
-        { status: { $nin: ['archived', 'deleted'] }},
         { assignedTo: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
       ]});
     },
     getCreatedTasks: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Task.find({ $and: [ 
-        { status: { $nin: ['archived', 'deleted'] }},
         { createdBy: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
       ]});
-    }
+    },
+    getArchivedTasks: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Task.find({ $and: [
+        { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+        { status: 'archived' },
+      ]});
+    },
+    getDeletedTickets: async(_: any, _args: any, request: Request) => {
+      const uid = getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Task.find({ $and: [
+        { $or: [{ createdBy: uid }, { assignedTo: uid }]},
+        { status: 'deleted' },
+      ]});
+    },
   },
   Mutation: {
     newTask: async (_: any, args: ITask, request: Request) => {

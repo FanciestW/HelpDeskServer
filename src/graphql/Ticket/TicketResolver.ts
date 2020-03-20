@@ -23,15 +23,15 @@ export const TicketResolver = {
       return await Ticket.find({
         $and: [
           {
-            $and: [
-              { status: { $ne: 'deleted' }},
-              { status: { $ne: 'archived' }},
-            ]
-          },
-          {
             $or: [
               { createdBy: uid },
               { assignedTo: uid },
+            ]
+          },
+          {
+            $and: [
+              { status: { $ne: 'deleted' }},
+              { status: { $ne: 'archived' }},
             ]
           },
         ]
@@ -41,16 +41,16 @@ export const TicketResolver = {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({ $and: [ 
-        { status: { $nin: ['archived', 'deleted'] }},
         { assignedTo: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
       ]});
     },
     getCreatedTickets: async (_: any, _args: any, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.find({ $and: [ 
-        { status: { $nin: ['archived', 'deleted'] }},
         { createdBy: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
       ]});
     },
     getArchivedTickets: async(_: any, _args: any, request: Request) => {
