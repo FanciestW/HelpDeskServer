@@ -118,6 +118,6 @@ describe('User Mongoose Model', function() {
       await User.create(validUser);
       const newUser = Object.assign({}, validUser, { uid: nanoid() });
       return assert.isRejected(User.create(newUser), /.*(duplicate key error).*/);
-    })
+    });
   });
 });
