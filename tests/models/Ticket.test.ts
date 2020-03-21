@@ -14,7 +14,7 @@ describe('Ticket Mongoose Model', function() {
     description: 'Test this new ticket',
     assignedTo: '001',
     createdBy: '002',
-    status: 'med',
+    status: 'new',
     priority: 1,
   };
 

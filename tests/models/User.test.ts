@@ -69,8 +69,7 @@ describe('User Mongoose Model', function() {
     });
 
     it('User has virtual fullName field on create', async function() {
-      const newUserNoMiddleNameUid = nanoid();
-      const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
+      const userDocNoMiddleName = Object.assign({}, validUser, { uid: nanoid(), email: 'test@test.com' });
       delete userDocNoMiddleName.middleName;
       const newUser = await User.create(validUser);
       const newUserNoMiddleName = await User.create(userDocNoMiddleName);
@@ -80,7 +79,7 @@ describe('User Mongoose Model', function() {
 
     it('User has virtual fullName field on query', async function() {
       const newUserNoMiddleNameUid = nanoid();
-      const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid });
+      const userDocNoMiddleName = Object.assign({}, validUser, { uid: newUserNoMiddleNameUid, email: 'test@test.com' });
       delete userDocNoMiddleName.middleName;
       await User.create(validUser);
       await User.create(userDocNoMiddleName);
@@ -114,5 +113,11 @@ describe('User Mongoose Model', function() {
       await User.create(validUser);
       return assert.isRejected(User.create(validUser), /.*(duplicate key error).*/);
     });
+
+    it('Duplicate User Email', async function() {
+      await User.create(validUser);
+      const newUser = Object.assign({}, validUser, { uid: nanoid() });
+      return assert.isRejected(User.create(newUser), /.*(duplicate key error).*/);
+    })
   });
 });

@@ -2,10 +2,15 @@ import { expect } from 'chai';
 import httpMocks from 'node-mocks-http';
 import sinon from 'sinon';
 import nanoid from 'nanoid';
+import crypto from 'crypto';
 import AuthSessionMiddlware from '../../src/middleware/AuthSession';
 import Mongoose from 'mongoose';
 import User from '../../src/models/User';
 import Session from '../../src/models/Session';
+
+function hashSid(sid: string): string {
+  return crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
+}
 
 describe('Session Authentication Middleware Test', function () {
   const validUser = {
@@ -40,8 +45,9 @@ describe('Session Authentication Middleware Test', function () {
 
   context('Valid Sessions', function() {
     it('Normal Session', async function() {
-      const { sid } = await Session.create({
-        sid: nanoid(),
+      const sid = nanoid();
+      await Session.create({
+        sid: hashSid(sid),
         uid: validUser.uid,
       });
       const request = httpMocks.createRequest({
@@ -53,13 +59,14 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.called).to.equal(true);
+      expect(next.calledOnce).to.equal(true);
       expect(next.getCall(0).args[0]).to.equal(undefined);
     });
 
     it('Session Cookie in Response.locals', async function() {
-      const { sid } = await Session.create({
-        sid: nanoid(),
+      const sid = nanoid();
+      await Session.create({
+        sid: hashSid(sid),
         uid: validUser.uid,
       });
       const request = httpMocks.createRequest({
@@ -134,8 +141,9 @@ describe('Session Authentication Middleware Test', function () {
     });
 
     it('User Session Expired', async function() {
-      const { sid } = await Session.create({
-        sid: nanoid(),
+      const sid = nanoid();
+      await Session.create({
+        sid: hashSid(sid),
         uid: validUser.uid,
         createdAt: new Date().setDate(new Date().getDate() - 2),
         expiresAt: new Date().setDate(new Date().getDate() - 1),
