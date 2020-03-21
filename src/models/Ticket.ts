@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import ITicket from '../interfaces/Ticket';
 import User from './User';
 
-const allowedStatuses = ['new', 'low', 'med', 'high', 'deleted', 'archived'];
+const allowedStatuses = ['new', 'pending', 'started', 'in progress', 'done', 'deleted', 'archived'];
 
 const validateUserExists = async (uid: string) => {
   if (uid === '') {
@@ -50,7 +50,8 @@ export const TicketSchema: Schema<ITicket> = new Schema<ITicket>({
         } else {
           return false;
         }
-      }
+      },
+      message: 'Invalid Status',
     }
   },
   priority: {

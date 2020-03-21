@@ -1,0 +1,44 @@
+type Task {
+  taskId: String
+  title: String
+  description: String
+  subtasks: [String]
+  relatedTickets: [String]
+  createdBy: User
+  assignedTo: User
+  status: String
+  priority: Int
+  createdAt: String
+  dueDate: String
+}
+
+type Query {
+  getATask(taskId: ID!): Task
+  getTasks: [Task]
+  getAssignedTasks: [Task]
+  getCreatedTasks: [Task]
+  getArchivedTasks: [Task]
+  getDelectedTasks: [Task]
+}
+
+type Mutation {
+  newTask(
+    title: String!,
+    description: String,
+    assignedTo: String,
+    status: String,
+    priority: Int!,
+    dueDate: String,
+  ): Task
+  updateTask(
+    taskId: ID!,
+    title: String,
+    description: String,
+    assignedTo: String,
+    status: String,
+    priority: Int,
+    dueDate: String,
+  ): Task
+  archiveTask(taskId: String!): Task
+  deleteTask(taskId: String!, mark: Boolean): Task
+}

@@ -4,11 +4,12 @@ import cookieParser from 'cookie-parser';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 import RequestTagger from './middleware/RequestTagger';
-import SessionRoute from './routes/Session';
+import UserRoute from './routes/User';
 import Logger from './middleware/Logger';
 import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
+import AuthSession from './middleware/AuthSession';
 require('dotenv').config();
 
 const mongooseOptions = {
@@ -18,7 +19,7 @@ const mongooseOptions = {
   useCreateIndex: true,
 };
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/helpdesk';
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/helpdeskdev';
 mongoose.connect(mongoUri, mongooseOptions, (err) => {
   if (err) {
     console.error(`Unable to connect to MongoDB with error: ${err}`);
@@ -35,9 +36,10 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+app.use('/api/graphql', AuthSession);
 
 // Express Routes
-app.use('/api/session', SessionRoute);
+app.use('/api/user', UserRoute);
 
 // GraphQL
 const schema = makeExecutableSchema({ typeDefs, resolvers, });

@@ -10,6 +10,7 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
   email: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator: function validateEmail(email: string) {
         const at = email.indexOf('@');

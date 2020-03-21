@@ -3,45 +3,26 @@ type User {
   firstName: String,
   middleName: String,
   lastName: String,
-  fullName: String,
   createdAt: String,
   email: String,
-  passwordDigest: String,
   phone: String,
   company: String,
   isTechnician: Boolean,
 }
 
 type Query {
-  getAllUsers: [User]
-  getUserByUid(uid: ID!): User
+  getUserInfo: User
 }
 
 type Mutation {
-  newUser(
-    firstName: String!,
-    middleName: String,
-    lastName: String!,
-    createdAt: String,
-    email: String!,
-    passwordDigest: String!,
-    phone: String,
-    company: String,
-    isTechnician: Boolean,
-  ): User
   updateUser(
     uid: ID!,
     firstName: String,
     middleName: String,
     lastName: String,
-    createdAt: String,
     email: String,
-    passwordDigest: String,
     phone: String,
     company: String,
     isTechnician: Boolean,
   ): User
-  deleteUser(
-    uid: ID!
-  ) : User
 }

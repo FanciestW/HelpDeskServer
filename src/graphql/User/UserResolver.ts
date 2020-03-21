@@ -1,25 +1,24 @@
-import nanoid from 'nanoid';
+
+// eslint-disable-next-line no-unused-vars
+import { Request } from 'express';
+// eslint-disable-next-line no-unused-vars
+import IUser from '../../interfaces/User';
 import User from '../../models/User';
+import { getUidFromSession } from '../../utils/SessionHelper';
 
 export const UserResolver = {
   Query: {
-    getAllUsers: async () => {
-      return await User.find({});
+    getUserInfo: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await User.findOne({ uid });
     },
-    getUserByUid: async (_, args) => {
-      return await User.findOne({ uid: args.uid });
-    }
   },
   Mutation: {
-    newUser: async (_, args) => {
-      const newUserObj = Object.assign({ uid: nanoid(), args });
-      return await User.create(newUserObj);
-    },
-    updateUser: async (_, args) => {
+    updateUser: async (_: any, args: IUser, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
       return User.findOneAndUpdate({ uid: args.uid }, args, { new: true });
-    },
-    deleteUser: async (_, args) => {
-      return await User.deleteOne({ uid: args.uid });
     },
   },
   User: {

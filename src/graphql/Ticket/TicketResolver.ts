@@ -1,60 +1,137 @@
+// eslint-disable-next-line no-unused-vars
+import { Request } from 'express';
 import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
+import { getUidFromSession } from '../../utils/SessionHelper';
+// eslint-disable-next-line no-unused-vars
+import ITicket from '../../interfaces/Ticket';
 
 export const TicketResolver = {
   Query: {
-    getATicket: async (_, args) => {
-      return await Ticket.findOne({ ticketId: args.ticketId });
+    getATicket: async (_: any, args: { ticketId: string; }, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.findOne({ $and: [
+        { ticketId: args.ticketId },
+        { $or: [{ createdBy: uid }, { assignedTo: uid }], }
+      ]});
     },
-    getUserTickets: async (_, args) => {
-      return await Ticket.find({ $or: [{createdBy: args.uid}, {assignedTo: args.uid}] });
-    },
-    getUserAssignedTickets: async (_, args) => {
-      return await Ticket.find({ assignedTo: args.uid });
-    },
-    getUserCreatedTickets: async (_, args) => {
-      return await Ticket.find({ createdBy: args.uid });
-    },
-    getUserArchivedTickets: async(_, args) => {
+    getTickets: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
       return await Ticket.find({
         $and: [
-          { $or: [{ createdBy: args.uid }, { assignedTo: args.uid }] },
+          {
+            $or: [
+              { createdBy: uid },
+              { assignedTo: uid },
+            ]
+          },
+          {
+            $and: [
+              { status: { $ne: 'deleted' }},
+              { status: { $ne: 'archived' }},
+            ]
+          },
+        ]
+      });
+    },
+    getAssignedTickets: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({ $and: [ 
+        { assignedTo: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
+      ]});
+    },
+    getCreatedTickets: async (_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({ $and: [ 
+        { createdBy: uid },
+        { status: { $nin: ['archived', 'deleted'] }},
+      ]});
+    },
+    getArchivedTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
           { status: 'archived' }
         ]
       });
-    }
+    },
+    getDeletedTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+          { status: 'deleted' }
+        ]
+      });
+    },
   },
   Mutation: {
-    newTicket: async (_, args) => {
-      const newTicketObj = Object.assign({ ticketId: nanoid() }, args);
-      return await Ticket.create(newTicketObj);
+    newTicket: async (_: any, args: ITicket, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const { title, description, assignedTo, status, priority, dueDate } = args;
+      return await Ticket.create({
+        ticketId: nanoid(),
+        title,
+        description,
+        createdBy: uid,
+        assignedTo,
+        status,
+        priority,
+        dueDate,
+      });
     },
-    updateTicket: async (_, args) => {
-      return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { args }, { new: true });
+    updateTicket: async (_: any, args: ITicket, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const { ticketId, title, description, assignedTo, status, priority, dueDate } = args;
+      return await Ticket.findOneAndUpdate({ ticketId }, {
+        title,
+        description,
+        assignedTo,
+        status,
+        priority,
+        dueDate,
+      }, { new: true });
     },
-    deleteTicket: async(_, args) => {
-      const mark = args.mark || true;
+    archiveTicket: async (_: any, args: { ticketId: string; }, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { status: 'archived' }, { new: true});
+    },
+    deleteTicket: async(_: any, args: { mark?: boolean; ticketId: string; }, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const { mark = true, ticketId } = args;
       if (mark) {
-        return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { status: 'deleted' });
+        return await Ticket.findOneAndUpdate({ ticketId }, { status: 'deleted' });
       } else {
-        return await Ticket.deleteOne({ ticketId: args.ticketId });
+        return await Ticket.deleteOne({ ticketId });
       }
     }
   },
   Ticket: {
-    createdAt: (obj) => {
+    createdAt: (obj: { createdAt: Date; }) => {
       const date: Date = obj.createdAt;
       return date.toISOString();
     },
-    dueDate: (obj) => {
-      const date: Date = obj.createdAt;
+    dueDate: (obj: { dueDate: Date; }) => {
+      const date: Date = obj.dueDate;
       return date.toISOString();
     },
-    createdBy: async (obj) => {
+    createdBy: async (obj: { createdBy: string; }) => {
       return await User.findOne({ uid: obj.createdBy });
     },
-    assignedTo: async (obj) => {
+    assignedTo: async (obj: { assignedTo: string; }) => {
       return await User.findOne({ uid: obj.assignedTo });
     }
   }

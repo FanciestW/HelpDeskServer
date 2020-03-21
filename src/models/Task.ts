@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import ITask from '../interfaces/Task';
 import User from './User';
 
+const allowedStatuses = ['new', 'pending', 'started', 'in progress', 'done', 'deleted', 'archived'];
+
 export const TaskSchema: Schema<ITask> = new Schema<ITask>({
   taskId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
@@ -34,6 +36,21 @@ export const TaskSchema: Schema<ITask> = new Schema<ITask>({
         }
       },
       message: 'Invalid assignedTo User',
+    }
+  },
+  status: {
+    type: String,
+    required: true,
+    default: 'new',
+    validate: {
+      validator: (stat) => {
+        if (allowedStatuses.includes(stat)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      message: 'Invalid Status',
     }
   },
   priority: {
