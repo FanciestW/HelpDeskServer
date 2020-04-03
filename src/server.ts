@@ -10,6 +10,7 @@ import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
 import AuthSession from './middleware/AuthSession';
+import { sendAssignedTicketEmail } from './utils/EmailSender';
 require('dotenv').config();
 
 const mongooseOptions = {
@@ -36,6 +37,13 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+
+
+app.get('/api/emailtest', async (_req, res) => {
+  const resEmail = await sendAssignedTicketEmail('wlin26@yahoo.com', 'Alyson');
+  res.status(200).send(JSON.stringify(resEmail, null, 2));
+});
+
 app.use('/api/graphql', AuthSession);
 
 // Express Routes
