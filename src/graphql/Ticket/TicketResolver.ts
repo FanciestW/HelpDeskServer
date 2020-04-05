@@ -91,10 +91,18 @@ export const TicketResolver = {
         dueDate,
       });
       if (newTicket?.assignedTo !== newTicket?.createdBy) {
-        const { firstName: name, email } = await User.findOne({ uid: newTicket?.assignedTo }, { uid: 0, firstName: 1, email: 1 });
-        await sendAssignedTicketEmail(email, name);
+        const { firstName: assigneeName, email: assigneeEmail } = await User.findOne({ uid: newTicket?.assignedTo }, { firstName: 1, email: 1 });
+        const { firstName: creatorName, email: creatorEmail } = await User.findOne({ uid: newTicket?.createdBy }, { firstName: 1, email: 1 });
+        await sendAssignedTicketEmail(assigneeEmail,
+          creatorEmail,
+          creatorName,
+          assigneeName,
+          newTicket?.title,
+          newTicket?.description,
+          'https://github.com/FanciestW'
+        );
       }
-      return 'OK';
+      return newTicket;
     },
     updateTicket: async (_: any, args: ITicket, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);

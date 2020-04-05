@@ -40,7 +40,7 @@ app.use(Logger);
 
 
 app.get('/api/emailtest', async (_req, res) => {
-  const resEmail = await sendAssignedTicketEmail('wlin26@yahoo.com', 'Alyson');
+  const resEmail = await sendAssignedTicketEmail('wlin26@yahoo.com', 'ashaw2512@gmail.com', 'Alyson', 'William', 'test', 'test description', 'https://github.com/FanciestW');
   res.status(200).send(JSON.stringify(resEmail, null, 2));
 });
 
