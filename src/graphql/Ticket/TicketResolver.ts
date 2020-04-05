@@ -4,6 +4,7 @@ import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
+import { sendAssignedTicketEmail } from '../../utils/EmailSender';
 // eslint-disable-next-line no-unused-vars
 import ITicket from '../../interfaces/Ticket';
 
@@ -79,7 +80,7 @@ export const TicketResolver = {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, dueDate } = args;
-      return await Ticket.create({
+      const newTicket = await Ticket.create({
         ticketId: nanoid(),
         title,
         description,
@@ -89,6 +90,19 @@ export const TicketResolver = {
         priority,
         dueDate,
       });
+      if (newTicket?.assignedTo !== newTicket?.createdBy) {
+        const { firstName: assigneeName, email: assigneeEmail } = await User.findOne({ uid: newTicket?.assignedTo }, { firstName: 1, email: 1 });
+        const { firstName: creatorName, email: creatorEmail } = await User.findOne({ uid: newTicket?.createdBy }, { firstName: 1, email: 1 });
+        await sendAssignedTicketEmail(assigneeEmail,
+          creatorEmail,
+          creatorName,
+          assigneeName,
+          newTicket?.title,
+          newTicket?.description,
+          'https://github.com/FanciestW'
+        );
+      }
+      return newTicket;
     },
     updateTicket: async (_: any, args: ITicket, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
