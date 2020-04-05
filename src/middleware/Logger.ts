@@ -59,5 +59,5 @@ export default (req: Request, _: Response, next: NextFunction) => {
       params: req.params || ''
     }, null, 2),
   });
-  next();
+  return next();
 };
