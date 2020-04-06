@@ -1,4 +1,6 @@
+import nanoid from 'nanoid';
 import sgMail from '@sendgrid/mail';
+import EmailTransaction from '../models/EmailTransaction';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
@@ -35,7 +37,18 @@ export async function sendAssignedTicketEmail(
     },
   };
   try {
-    return await sgMail.send(msg);
+    const resEmail = await sgMail.send(msg);
+    let emailTransactionId: string;
+    do {
+      emailTransactionId = nanoid(14);
+    } while(await EmailTransaction.findOne({ emailTransactionId, }));
+    await EmailTransaction.create({
+      emailTransactionId,
+      subject: 'Assigned Ticket Email',
+      emailSentTo: assigneeEmail,
+      triggeredBy: creatorEmail,
+    });
+    return resEmail;
   } catch (err) {
     return err;
   }
