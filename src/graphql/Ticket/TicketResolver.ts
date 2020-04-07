@@ -90,7 +90,7 @@ export const TicketResolver = {
         priority,
         dueDate,
       });
-      if (newTicket?.assignedTo !== newTicket?.createdBy) {
+      if (newTicket?.assignedTo && newTicket?.assignedTo !== newTicket?.createdBy) {
         const { firstName: assigneeName, email: assigneeEmail } = await User.findOne({ uid: newTicket?.assignedTo }, { firstName: 1, email: 1 });
         const { firstName: creatorName, email: creatorEmail } = await User.findOne({ uid: newTicket?.createdBy }, { firstName: 1, email: 1 });
         await sendAssignedTicketEmail(assigneeEmail,
