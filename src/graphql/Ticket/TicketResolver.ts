@@ -99,23 +99,40 @@ export const TicketResolver = {
           assigneeName,
           newTicket?.title,
           newTicket?.description,
-          'https://github.com/FanciestW'
+          'https://github.com/FanciestW',
         );
       }
       return newTicket;
     },
     updateTicket: async (_: any, args: ITicket, request: Request) => {
-      const uid = await getUidFromSession(request.signedCookies?.session);
-      if (!uid) return new Error('Unauthorized');
-      const { ticketId, title, description, assignedTo, status, priority, dueDate } = args;
-      return await Ticket.findOneAndUpdate({ ticketId }, {
-        title,
-        description,
-        assignedTo,
-        status,
-        priority,
-        dueDate,
-      }, { new: true });
+      try {
+        const uid = await getUidFromSession(request.signedCookies?.session);
+        if (!uid) return new Error('Unauthorized');
+        const { ticketId, title, description, assignedTo, status, priority, dueDate } = args;
+        const updatedTicket = await Ticket.findOneAndUpdate({ ticketId }, {
+          title,
+          description,
+          assignedTo,
+          status,
+          priority,
+          dueDate,
+        }, { omitUndefined: true, new: true });
+        if (assignedTo && updatedTicket?.assignedTo !== assignedTo) {
+          const { firstName: assigneeName, email: assigneeEmail } = await User.findOne({ uid: assignedTo }, { firstName: 1, email: 1 });
+          const { firstName: creatorName, email: creatorEmail } = await User.findOne({ uid: updatedTicket?.createdBy }, { firstName: 1, email: 1 });
+          await sendAssignedTicketEmail(assigneeEmail,
+            creatorEmail,
+            creatorName,
+            assigneeName,
+            updatedTicket?.title,
+            updatedTicket?.description,
+            'https://github.com/FanciestW',
+          );
+        }
+        return updatedTicket;
+      } catch (err) {
+        console.log(err);
+      }
     },
     archiveTicket: async (_: any, args: { ticketId: string; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
