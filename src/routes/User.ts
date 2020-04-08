@@ -5,6 +5,8 @@ import nanoid from 'nanoid';
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';
+import { sendVerificationEmail } from '../utils/EmailSender';
+import EmailVerification from '../models/EmailVerification';
 const router = express.Router();
 
 const loginStrongParams = {
@@ -37,7 +39,7 @@ const signUpStrongParams = {
   company: 'string',
   isTechnician: 'boolean'
 };
-router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response) => {
+router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Response) => {
   try {
     const {
       firstName,
@@ -55,7 +57,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
     let uid: string;
     do {
       uid = nanoid(14);
-    } while (await User.findOne({ uid, }));
+    } while (await User.exists({ uid, }));
     const passwordDigest = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
     const newUser = await new User({
       uid,
@@ -69,6 +71,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
       isTechnician
     }).save();
     if (newUser) {
+      sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
       const sid = await createSession(newUser.uid);
       return res.cookie('session', sid, { maxAge: 86400000, signed: true, httpOnly: true }).sendStatus(200);
     } else {
@@ -85,6 +88,22 @@ router.post('/logout', async (req: Request, res: Response) => {
     await deleteSession(sid);
   }
   return res.clearCookie('session').sendStatus(200);
+});
+
+router.get('/verify', async (req: Request, res: Response) => {
+  const token = req.query?.token;
+  if (token) {
+    const { uid } = await EmailVerification.findOneAndDelete({
+      $and: [
+        { expiresAt: { $gt: new Date() } },
+        { emailVerificationId: token },
+      ]
+    });
+    await User.updateOne({ uid, }, { verified: true });
+    return res.status(200).send('Email verified');
+  } else {
+    return res.status(400).send('Broken Link, please try sending a new email');
+  }
 });
 
 export default router;

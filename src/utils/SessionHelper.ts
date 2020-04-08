@@ -15,7 +15,7 @@ export async function createSession(uid: string): Promise<string> {
   do {
     sid = nanoid();
     hashSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
-  } while (await Session.findOne({ sid: hashSid, }));
+  } while (await Session.exists({ sid: hashSid, }));
   await new Session({ uid, sid: hashSid }).save();
   return sid;
 }

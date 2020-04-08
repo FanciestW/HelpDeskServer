@@ -8,6 +8,7 @@ interface IUser extends Document {
     fullName?: string;
     passwordDigest: string;
     email: string;
+    verified: boolean;
     phone?: string;
     company?: string;
     isTechnician: boolean

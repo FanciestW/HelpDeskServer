@@ -26,6 +26,7 @@ export const UserSchema: Schema<IUser> = new Schema<IUser>({
       message: (props) => `${props.value} - is an invalid Email`,
     },
   },
+  verified: { type: Boolean, required: false, default: true, },
   passwordDigest: {
     type: String,
     required: true,

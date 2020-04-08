@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -10,7 +11,7 @@ import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
 import AuthSession from './middleware/AuthSession';
-require('dotenv').config();
+import { sendAssignedTicketEmail } from './utils/EmailSender';
 
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -36,6 +37,13 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
 app.use(RequestTagger);
 app.use(Logger);
+
+
+app.get('/api/emailtest', async (_req, res) => {
+  const resEmail = await sendAssignedTicketEmail('wlin26@yahoo.com', 'ashaw2512@gmail.com', 'Alyson', 'William', 'test', 'test description', 'https://github.com/FanciestW');
+  res.status(200).send(JSON.stringify(resEmail, null, 2));
+});
+
 app.use('/api/graphql', AuthSession);
 
 // Express Routes
@@ -48,6 +56,7 @@ app.use('/api/graphql', graphqlHTTP({
   graphiql: true,
 }));
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Listening on port: ${process.env.PORT || 3000}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Listening on port: ${PORT}`);
 });
