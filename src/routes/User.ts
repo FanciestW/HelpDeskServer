@@ -6,6 +6,7 @@ import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';
 import { sendVerificationEmail } from '../utils/EmailSender';
+import EmailVerification from '../models/EmailVerification';
 const router = express.Router();
 
 const loginStrongParams = {
@@ -87,6 +88,22 @@ router.post('/logout', async (req: Request, res: Response) => {
     await deleteSession(sid);
   }
   return res.clearCookie('session').sendStatus(200);
+});
+
+router.get('/verify', async (req: Request, res: Response) => {
+  const token = req.query?.token;
+  if (token) {
+    const { uid } = await EmailVerification.findOneAndDelete({
+      $and: [
+        { expiresAt: { $gt: new Date() } },
+        { emailVerificationId: token },
+      ]
+    });
+    await User.updateOne({ uid, }, { verified: true });
+    return res.status(200).send('Email verified');
+  } else {
+    return res.status(400).send('Broken Link, please try sending a new email');
+  }
 });
 
 export default router;
