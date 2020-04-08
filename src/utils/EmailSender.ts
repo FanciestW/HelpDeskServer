@@ -75,7 +75,6 @@ export async function sendVerificationEmail(uid: string, email: string, name: st
       uid,
     });
     const verificationUrl = `http://${fqdn}/api/verify?token=${emailVerification.emailVerificationId}`;
-    console.log(verificationUrl);
     const msg = {
       to: email,
       from: 'helpdeskbot@williamlin.tech',
