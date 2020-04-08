@@ -93,14 +93,18 @@ router.post('/logout', async (req: Request, res: Response) => {
 router.get('/verify', async (req: Request, res: Response) => {
   const token = req.query?.token;
   if (token) {
-    const { uid } = await EmailVerification.findOneAndDelete({
+    const verification = await EmailVerification.findOneAndDelete({
       $and: [
         { expiresAt: { $gt: new Date() } },
         { emailVerificationId: token },
       ]
     });
-    await User.updateOne({ uid, }, { verified: true });
-    return res.status(200).send('Email verified');
+    if (verification?.uid) {
+      await User.updateOne({ uid: verification.uid, }, { verified: true });
+      return res.status(200).send('Email verified');
+    } else {
+      return res.status(400).send('Broken Link, please try sending a new email');
+    }
   } else {
     return res.status(400).send('Broken Link, please try sending a new email');
   }
