@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -11,7 +12,6 @@ import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
 import AuthSession from './middleware/AuthSession';
 import { sendAssignedTicketEmail } from './utils/EmailSender';
-require('dotenv').config();
 
 const mongooseOptions = {
   useNewUrlParser: true,

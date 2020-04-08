@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 interface IEmailVerification extends Document {
-  emailVerficationId: string;
+  emailVerificationId: string;
   verificationToken: string;
   uid: string;
   expiresAt: Date;

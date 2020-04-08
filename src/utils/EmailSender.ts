@@ -2,8 +2,7 @@ import nanoid from 'nanoid';
 import sgMail from '@sendgrid/mail';
 import EmailTransaction from '../models/EmailTransaction';
 import EmailVerification from '../models/EmailVerification';
-import { url } from 'inspector';
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENGRID_API_KEY);
 
 /**
  * Send an Email with the ticket assignment template.
@@ -75,7 +74,7 @@ export async function sendVerificationEmail(uid: string, email: string, name: st
       emailVerificationId,
       uid,
     });
-    const verificationUrl = `${fqdn}/api/verify?token=${emailVerification.emailVerficationId}`;
+    const verificationUrl = `${fqdn}/api/verify?token=${emailVerification.emailVerificationId}`;
     console.log(verificationUrl);
     const msg = {
       to: email,
