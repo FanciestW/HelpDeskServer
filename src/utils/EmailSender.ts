@@ -74,7 +74,7 @@ export async function sendVerificationEmail(uid: string, email: string, name: st
       emailVerificationId,
       uid,
     });
-    const verificationUrl = `${fqdn}/api/verify?token=${emailVerification.emailVerificationId}`;
+    const verificationUrl = `http://${fqdn}/api/verify?token=${emailVerification.emailVerificationId}`;
     console.log(verificationUrl);
     const msg = {
       to: email,
