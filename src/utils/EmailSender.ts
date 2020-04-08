@@ -2,6 +2,7 @@ import nanoid from 'nanoid';
 import sgMail from '@sendgrid/mail';
 import EmailTransaction from '../models/EmailTransaction';
 import EmailVerification from '../models/EmailVerification';
+import { url } from 'inspector';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
@@ -60,18 +61,33 @@ export async function sendAssignedTicketEmail(
  * @param uid The uid of the user that needs email verification.
  * @param email The email to send the email verification email to.
  * @param name The name of the user to include in the email's body.
+ * @param fqdn The Fully Qualifed Domain Name (www.example.com) that will be used in the verification link url.
  * @returns A Promise of the Sendgrid return object or an error if it fails.
  */
-export async function sendVerificationEmail(uid: string, email: string, name: string) {
-  // Delete all old verification tokens
-  await EmailVerification.deleteMany({ uid, });
-  let emailVerificationId;
-  do {
-    emailVerificationId = nanoid(14);
-  } while (await EmailVerification.exists({ emailVerificationId }));
-  const emailVerification = await EmailVerification.create({
-    emailVerificationId,
-    uid,
-  });
-  // TODO::Continue working on email verification and add email verification urls.
+export async function sendVerificationEmail(uid: string, email: string, name: string, fqdn: string) {
+  try {
+    await EmailVerification.deleteMany({ uid, });
+    let emailVerificationId;
+    do {
+      emailVerificationId = nanoid(14);
+    } while (await EmailVerification.exists({ emailVerificationId }));
+    const emailVerification = await EmailVerification.create({
+      emailVerificationId,
+      uid,
+    });
+    const verificationUrl = `${fqdn}/api/verify?token=${emailVerification.emailVerficationId}`;
+    console.log(verificationUrl);
+    const msg = {
+      to: email,
+      from: 'helpdeskbot@williamlin.tech',
+      templateId: 'd-9ce5ca4b89114645b1f850f5e9ecd7c9',
+      dynamic_template_data: {
+        name,
+        buttonUrl: verificationUrl,
+      }
+    };
+    return await sgMail.send(msg);
+  } catch (err) {
+    return err;
+  }
 }

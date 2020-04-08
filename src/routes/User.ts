@@ -5,6 +5,7 @@ import nanoid from 'nanoid';
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';
+import { sendVerificationEmail } from '../utils/EmailSender';
 const router = express.Router();
 
 const loginStrongParams = {
@@ -37,7 +38,7 @@ const signUpStrongParams = {
   company: 'string',
   isTechnician: 'boolean'
 };
-router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response) => {
+router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Response) => {
   try {
     const {
       firstName,
@@ -69,6 +70,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
       isTechnician
     }).save();
     if (newUser) {
+      sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
       const sid = await createSession(newUser.uid);
       return res.cookie('session', sid, { maxAge: 86400000, signed: true, httpOnly: true }).sendStatus(200);
     } else {
