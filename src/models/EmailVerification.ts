@@ -23,8 +23,8 @@ export const EmailVerificationSchema: Schema<IEmailVerification> = new Schema<IE
     }
   },
   createdAt: { type: Date, required: false, default: Date.now },
-  expiresAt: { type: Date, required: false, default: Date.now() + 86400 * 1000, expires: 86400 },
+  expiresAt: { type: Date, required: false, default: Date.now() + 3600 * 1000, expires: 3600 },
 });
 
 const EmailVerification: mongoose.Model<IEmailVerification> = mongoose.model<IEmailVerification>('EmailVerification', EmailVerificationSchema);
-export default Session;
+export default EmailVerification;
