@@ -55,7 +55,16 @@ export async function sendAssignedTicketEmail(
   }
 }
 
-export async function sendVerificationEmail(uid: string, email: string) {
+/**
+ * Deletes all old email verification tokens and creates a new one and sends email verification email.
+ * @param uid The uid of the user that needs email verification.
+ * @param email The email to send the email verification email to.
+ * @param name The name of the user to include in the email's body.
+ * @returns A Promise of the Sendgrid return object or an error if it fails.
+ */
+export async function sendVerificationEmail(uid: string, email: string, name: string) {
+  // Delete all old verification tokens
+  await EmailVerification.deleteMany({ uid, });
   let emailVerificationId;
   do {
     emailVerificationId = nanoid(14);
@@ -64,4 +73,5 @@ export async function sendVerificationEmail(uid: string, email: string) {
     emailVerificationId,
     uid,
   });
+  // TODO::Continue working on email verification and add email verification urls.
 }
