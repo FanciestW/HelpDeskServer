@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import IEmailTransaction from '../interfaces/EmailTransaction';
-import User from './User';
 
 export const EmailTransactionSchema: Schema<IEmailTransaction> = new Schema<IEmailTransaction>({
   emailTransactionId: { type: String, required: true, unique: true },
