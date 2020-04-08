@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import IEmailVerification from '../interfaces/EmailVerification';
 import User from './User';
+import Session from './Session';
 
 const validateUid = async (uid: string) => {
   if (await User.countDocuments({ uid, }) > 0) {
@@ -12,7 +13,6 @@ const validateUid = async (uid: string) => {
 
 export const EmailVerificationSchema: Schema<IEmailVerification> = new Schema<IEmailVerification>({
   emailVerificationId: { type: String, required: true, unqiue: true },
-  verificationToken: { type: String, required: true, unique: true },
   uid: {
     type: String,
     required: true,
@@ -27,3 +27,4 @@ export const EmailVerificationSchema: Schema<IEmailVerification> = new Schema<IE
 });
 
 const EmailVerification: mongoose.Model<IEmailVerification> = mongoose.model<IEmailVerification>('EmailVerification', EmailVerificationSchema);
+export default Session;

@@ -55,7 +55,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (_, res: Response
     let uid: string;
     do {
       uid = nanoid(14);
-    } while (await User.findOne({ uid, }));
+    } while (await User.exists({ uid, }));
     const passwordDigest = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
     const newUser = await new User({
       uid,
