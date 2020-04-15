@@ -71,7 +71,9 @@ router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Respon
       isTechnician
     }).save();
     if (newUser) {
-      sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
+      if (process.env.ENV !== 'DEV') {
+        sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
+      }
       const sid = await createSession(newUser.uid);
       return res.cookie('session', sid, { maxAge: 86400000, signed: true, httpOnly: true }).sendStatus(200);
     } else {
