@@ -34,7 +34,7 @@ export const ConnectionRequestResolver = {
     acceptRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      await Connection.updateOne({
+      await ConnectionRequest.updateOne({
         requesterUid: args.requesterUid,
         recipientUid: uid,
       }, { status: 'accepted' });
@@ -43,7 +43,7 @@ export const ConnectionRequestResolver = {
     rejectRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      return await Connection.updateOne({
+      return await ConnectionRequest.updateOne({
         requesterUid: args.requesterUid,
         recipientUid: uid,
       },
@@ -52,10 +52,10 @@ export const ConnectionRequestResolver = {
   },
   ConnectionRequest: {
     requester: async (obj: { requesterUid: String; }) => {
-      return await User.findOne({ uid: requesterUid, });
+      return await User.findOne({ uid: obj.requesterUid, });
     },
     recipient: async (obj: { recipientUid: String }) => {
-      return await User.findOne({ uid: recipientUid, });
+      return await User.findOne({ uid: obj.recipientUid, });
     },
   },
-}
+};
