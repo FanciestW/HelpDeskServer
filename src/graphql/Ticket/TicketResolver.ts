@@ -74,6 +74,16 @@ export const TicketResolver = {
         ]
       });
     },
+    getOpenTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+          { status: { $in: ['started', 'in progress'] } },
+        ]
+      });
+    },
   },
   Mutation: {
     newTicket: async (_: any, args: ITicket, request: Request) => {

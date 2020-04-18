@@ -59,12 +59,23 @@ export const TaskResolver = {
         { status: 'archived' },
       ]});
     },
-    getDeletedTickets: async(_: any, _args: any, request: Request) => {
-      const uid = getUidFromSession(request.signedCookies?.session);
+    getDeletedTasks: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Task.find({ $and: [
         { $or: [{ createdBy: uid }, { assignedTo: uid }]},
         { status: 'deleted' },
+      ]});
+    },
+    getUpcomingTasks: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const oneWeekFromNow = new Date();
+      oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
+      return await Task.find({ $and: [
+        { assignedTo: uid },
+        { status: { $in: ['new', 'pending', 'started'] } },
+        { dueDate: { $lte: oneWeekFromNow } },
       ]});
     },
   },

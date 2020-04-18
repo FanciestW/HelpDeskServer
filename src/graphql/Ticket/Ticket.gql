@@ -17,6 +17,7 @@ type Query {
   getCreatedTickets: [Ticket]
   getArchivedTickets: [Ticket]
   getDeletedTickets: [Ticket]
+  getOpenTickets: [Ticket]
 }
 
 type Mutation {
