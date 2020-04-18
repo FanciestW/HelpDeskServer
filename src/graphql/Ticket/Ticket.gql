@@ -1,13 +1,13 @@
 type Ticket {
-  ticketId: ID,
-  title: String,
-  description: String,
-  createdBy: User,
-  assignedTo: User,
-  status: String,
-  priority: Int,
-  createdAt: String,
-  dueDate: String,
+  ticketId: ID
+  title: String
+  description: String
+  createdBy: User
+  assignedTo: User
+  status: String
+  priority: Int
+  createdAt: String
+  dueDate: String
 }
 
 type Query {

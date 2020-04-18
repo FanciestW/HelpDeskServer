@@ -1,0 +1,44 @@
+type ConnectionRequest {
+  requesterUid: String
+  requester: User
+  recipientUid: String
+  recipient: User
+  status: String
+}
+
+type Query {
+  """
+    Returns all requests that has the user's UID as the recipient.
+  """
+  getReceviedRequests: [ConnectionRequest]
+
+  """
+    Returns all the requests that has the user's UID as the requester.
+  """
+  getSentRequests: [ConnectionRequest]
+}
+
+type Mutation {
+  """
+    Uses session data to create a new request on behalf of that user.
+  """
+  newRequest(
+    recipientUid: String!
+  ): ConnectionRequest
+
+  """
+    Uses session data to accept a request on behalf of that user.
+    Include the requester's uid as the parameter.
+  """
+  acceptRequest(
+    requesterUid: String!
+  ): ConnectionRequest
+
+  """
+    Uses session data to reject a request on behalf of that user.
+    Invlude the requester's uid as the parameter.
+  """
+  rejectRequest(
+    requesterUid: String!
+  ): ConnectionRequest
+}

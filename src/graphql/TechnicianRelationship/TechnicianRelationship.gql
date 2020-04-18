@@ -1,0 +1,17 @@
+type TechnicianRelationship {
+  technicianUid: String,
+  clientUid: String,
+  technician: User,
+  client: User
+}
+
+type Query {
+  """
+    Returns all technicians belonging to a client. Uses session data to determine which client UID to look for.
+  """
+  getTechnicians: [User]
+  """
+    Returns all clients of a technician. Uses session data to determine which technician UID to look for.
+  """
+  getClients: [User]
+}
