@@ -1,22 +1,14 @@
 import mongoose, { Schema } from 'mongoose';
 import IConnectionRequest from '../interfaces/ConnectionRequest';
+import User from '../models/User';
 
-const validateUserExists = async (uid: string) => {
-  if (uid === '') {
-    return true;
-  } else if (await User.countDocuments({ uid, }) > 0) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-export const ConnectionRequest: Schema<IConnectionRequest> = new Schema<IConnectionRequest>({
+export const ConnectionRequestSchema: Schema<IConnectionRequest> = new Schema<IConnectionRequest>({
   requesterUid: {
     type: String,
     required: true,
+    unique: false,
     validate: {
-      validator: async (uid: string) => {
+      validator: async function (uid: string) {
         if (await User.countDocuments({ uid }) > 0) {
           return true;
         } else {
@@ -26,11 +18,12 @@ export const ConnectionRequest: Schema<IConnectionRequest> = new Schema<IConnect
       message: 'Invalid User',
     },
   },
-  receipientUid: {
+  recipientUid: {
     type: String,
     required: true,
+    unique: false,
     validate: {
-      validator: async (uid: string) => {
+      validator: async function(uid: string) {
         if (uid !== this.requesterUid && await User.countDocuments({ uid }) > 0) {
           return true;
         } else {
@@ -48,5 +41,7 @@ export const ConnectionRequest: Schema<IConnectionRequest> = new Schema<IConnect
   }
 });
 
-const ConnectionRequest: mongoose.Model<IConnectionRequest> = mongoose.model<IConnectionRequest>('ConnectionRequest', ConnectionRequest);
+ConnectionRequestSchema.index({ requesterUid: 1, recipientUid: 1 }, { unique: true });
+
+const ConnectionRequest: mongoose.Model<IConnectionRequest> = mongoose.model<IConnectionRequest>('ConnectionRequest', ConnectionRequestSchema);
 export default ConnectionRequest;

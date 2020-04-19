@@ -29,7 +29,7 @@ export const ConnectionRequestResolver = {
       return await ConnectionRequest.create({
         requesterUid: uid,
         recipientUid: args.recipientUid
-      }, { new: true, });
+      });
     },
     acceptRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);

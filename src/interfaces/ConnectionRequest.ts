@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-interface IConnectionRequest {
+interface IConnectionRequest extends Document {
   requesterUid: string;
   recipientUid: string;
   status: string;

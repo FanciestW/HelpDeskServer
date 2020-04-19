@@ -10,7 +10,7 @@ type Query {
   """
     Returns all requests that has the user's UID as the recipient.
   """
-  getReceviedRequests: [ConnectionRequest]
+  getReceivedRequests: [ConnectionRequest]
 
   """
     Returns all the requests that has the user's UID as the requester.
