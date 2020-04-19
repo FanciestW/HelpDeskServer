@@ -25,6 +25,16 @@ export const TechnicianRelationshipResolver = {
         { $unwind: { path: '$client'} },
       ]);
       return data.map((entry) => entry?.client);
+    },
+    getAllTechnicianRelationships: async(_: any, _args: any, request: Request) => {
+      const uid: String = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await TechnicianRelationship.find({
+        $or: [
+          { technicianUid: uid },
+          { clientUid: uid },
+        ]
+      });
     }
   },
   TechnicianRelationship: {
