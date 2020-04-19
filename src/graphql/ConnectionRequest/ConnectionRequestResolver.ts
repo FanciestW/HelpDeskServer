@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Request } from 'express';
 import ConnectionRequest from '../../models/ConnectionRequest';
+import TechnicianRelationship from '../../models/TechnicianRelationship';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
 
@@ -34,11 +35,15 @@ export const ConnectionRequestResolver = {
     acceptRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      await ConnectionRequest.updateOne({
+      const connectionRequest = await ConnectionRequest.updateOne({
         requesterUid: args.requesterUid,
         recipientUid: uid,
       }, { status: 'accepted' });
-      //TODO::Add record in TechnicianRelationships.
+      await TechnicianRelationship.create({
+        clientUid: connectionRequest.requesterUid,
+        technicianUid: connectionRequest.recipientUid,
+      });
+      return connectionRequest;
     },
     rejectRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
