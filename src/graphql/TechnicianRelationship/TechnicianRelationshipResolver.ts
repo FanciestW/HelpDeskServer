@@ -9,12 +9,22 @@ export const TechnicianRelationshipResolver = {
     getTechnicians: async (_: any, _args: any, request: Request) => {
       const uid: String = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      return await TechnicianRelationship.find({ clientUid: uid });
+      const data = await TechnicianRelationship.aggregate([
+        { $match: { clientUid: uid } },
+        { $lookup: { from: 'users', localField: 'technicianUid', foreignField: 'uid', as: 'technician' } },
+        { $unwind: { path: '$technician'} },
+      ]);
+      return data.map((entry) => entry?.technician);
     },
     getClients: async (_: any, _args: any, request: Request) => {
       const uid: String = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      return await TechnicianRelationship.find({ technicianUid: uid });
+      const data = await TechnicianRelationship.aggregate([
+        { $match: { technicianUid: uid } },
+        { $lookup: { from: 'users', localField: 'clientUid', foreignField: 'uid', as: 'client' } },
+        { $unwind: { path: '$client'} },
+      ]);
+      return data.map((entry) => entry?.client);
     }
   },
   TechnicianRelationship: {

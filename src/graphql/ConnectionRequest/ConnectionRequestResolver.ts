@@ -35,10 +35,11 @@ export const ConnectionRequestResolver = {
     acceptRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
-      const connectionRequest = await ConnectionRequest.updateOne({
+      const connectionRequest = await ConnectionRequest.findOneAndUpdate({
         requesterUid: args.requesterUid,
         recipientUid: uid,
-      }, { status: 'accepted' });
+      }, { status: 'accepted' }, { new: true });
+      console.log(JSON.stringify(connectionRequest, null, 2));
       await TechnicianRelationship.create({
         clientUid: connectionRequest.requesterUid,
         technicianUid: connectionRequest.recipientUid,
