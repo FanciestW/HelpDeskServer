@@ -7,7 +7,7 @@ import { getUidFromSession } from '../../utils/SessionHelper';
 export const TechnicianRelationshipResolver = {
   Query: {
     getTechnicians: async (_: any, _args: any, request: Request) => {
-      const uid: String = await getUidFromSession(request.signedCookies?.session);
+      const uid: string = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       const data = await TechnicianRelationship.aggregate([
         { $match: { clientUid: uid } },
@@ -17,7 +17,7 @@ export const TechnicianRelationshipResolver = {
       return data.map((entry) => entry?.technician);
     },
     getClients: async (_: any, _args: any, request: Request) => {
-      const uid: String = await getUidFromSession(request.signedCookies?.session);
+      const uid: string = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       const data = await TechnicianRelationship.aggregate([
         { $match: { technicianUid: uid } },
@@ -27,7 +27,7 @@ export const TechnicianRelationshipResolver = {
       return data.map((entry) => entry?.client);
     },
     getAllTechnicianRelationships: async(_: any, _args: any, request: Request) => {
-      const uid: String = await getUidFromSession(request.signedCookies?.session);
+      const uid: string = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await TechnicianRelationship.find({
         $or: [
@@ -38,10 +38,10 @@ export const TechnicianRelationshipResolver = {
     }
   },
   TechnicianRelationship: {
-    technician: async (obj: { technicianUid: String; }) => {
+    technician: async (obj: { technicianUid: string }) => {
       return await User.findOne({ uid: obj.technicianUid });
     },
-    client: async (obj: { clientUid: String; }) => {
+    client: async (obj: { clientUid: string }) => {
       return await User.findOne({ uid: obj.clientUid });
     }
   }

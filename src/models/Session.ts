@@ -1,4 +1,4 @@
-import mongoose, { Schema, Mongoose } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import ISession from '../interfaces/Session';
 import User from './User';
 
@@ -26,6 +26,7 @@ export const SessionSchema: Schema = new Schema({
 
 SessionSchema.pre<ISession>('save', async function(next) {
   const uid = this.get('uid');
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const userSessions = await Session.countDocuments({ uid, });
   if (userSessions >= 10) {
     throw new mongoose.Error('Too many sessions');

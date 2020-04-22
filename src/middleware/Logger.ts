@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import winston, { format } from 'winston';
-const { combine, timestamp, prettyPrint } = format;
+import winston from 'winston';
 import logdnaWinston from 'logdna-winston';
 import os from 'os';
 
@@ -37,27 +36,31 @@ const logDnaOptions = {
   app: 'HelpDeskServer',
   env: process.env.ENV,
   level: 'info', // Default to debug, maximum level of log, doc: https://github.com/winstonjs/winston#logging-levels
+  // eslint-disable-next-line @typescript-eslint/camelcase
   index_meta: true, // Defaults to false, when true ensures meta object will be searchable
   handleExceptionss: true, // Only add this line in order to track exceptions
 };
 
 const logger = winston.createLogger({});
 
-// logger.add(new logdnaWinston(logDnaOptions));
-// logger.add(new winston.transports.Console({
-//   format: winston.format.simple()
-// }));
+if (process.env.ENV === 'DEV') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple()
+  }));
+} else {
+  logger.add(new logdnaWinston(logDnaOptions));
+}
 
 export default (req: Request, _: Response, next: NextFunction) => {
-  // logger.info({
-  //   message: `Request ID: ${req.headers['requestId']}`,
-  //   data: JSON.stringify({
-  //     method: req.method || '',
-  //     header: req.headers || '',
-  //     body: req.body || '',
-  //     query: req.query || '',
-  //     params: req.params || ''
-  //   }, null, 2),
-  // });
+  logger.info({
+    message: `Request ID: ${req.headers['requestId']}`,
+    data: JSON.stringify({
+      method: req.method || '',
+      header: req.headers || '',
+      body: req.body || '',
+      query: req.query || '',
+      params: req.params || ''
+    }, null, 2),
+  });
   return next();
 };

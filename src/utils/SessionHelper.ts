@@ -30,7 +30,7 @@ export async function deleteSession(sid: string): Promise<ISession> {
   return await Session.findOneAndDelete({ sid: hashedSid });
 }
 
-export async function validateSession(sid: string): Promise<Boolean> {
+export async function validateSession(sid: string): Promise<boolean> {
   const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
   if (await Session.exists({
     $and: [
@@ -69,7 +69,7 @@ export async function getUserFromSession(sid: string): Promise<IUser> {
  * @param sid The un-hashed SID to search with.
  * @returns Promise<String> containing the UID found, undefined if nothing is found.
  */
-export async function getUidFromSession(sid: string): Promise<String> {
+export async function getUidFromSession(sid: string): Promise<string> {
   const hashedSid = crypto.createHmac('sha256', process.env.HMAC_KEY || 'secret').update(sid).digest('base64');
   const sessionObj = await Session.findOne({
     $and: [

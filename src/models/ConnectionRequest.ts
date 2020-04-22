@@ -8,7 +8,7 @@ export const ConnectionRequestSchema: Schema<IConnectionRequest> = new Schema<IC
     required: true,
     unique: false,
     validate: {
-      validator: async function (uid: string) {
+      validator: async function (uid: string): Promise<boolean> {
         if (await User.countDocuments({ uid }) > 0) {
           return true;
         } else {
@@ -23,7 +23,7 @@ export const ConnectionRequestSchema: Schema<IConnectionRequest> = new Schema<IC
     required: true,
     unique: false,
     validate: {
-      validator: async function(uid: string) {
+      validator: async function(uid: string): Promise<boolean> {
         if (uid !== this.requesterUid && await User.countDocuments({ uid }) > 0) {
           return true;
         } else {

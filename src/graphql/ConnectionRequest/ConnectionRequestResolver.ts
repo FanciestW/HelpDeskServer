@@ -24,7 +24,7 @@ export const ConnectionRequestResolver = {
     },
   },
   Mutation: {
-    newRequest: async (_: any, args: { recipientUid: String; }, request: Request) => {
+    newRequest: async (_: any, args: { recipientUid: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await ConnectionRequest.create({
@@ -32,7 +32,7 @@ export const ConnectionRequestResolver = {
         recipientUid: args.recipientUid
       });
     },
-    acceptRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
+    acceptRequest: async (_: any, args: { requesterUid: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       const connectionRequest = await ConnectionRequest.findOneAndUpdate({
@@ -46,7 +46,7 @@ export const ConnectionRequestResolver = {
       });
       return connectionRequest;
     },
-    rejectRequest: async (_: any, args: { requesterUid: String; }, request: Request) => {
+    rejectRequest: async (_: any, args: { requesterUid: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await ConnectionRequest.updateOne({
@@ -57,10 +57,10 @@ export const ConnectionRequestResolver = {
     },
   },
   ConnectionRequest: {
-    requester: async (obj: { requesterUid: String; }) => {
+    requester: async (obj: { requesterUid: string }) => {
       return await User.findOne({ uid: obj.requesterUid, });
     },
-    recipient: async (obj: { recipientUid: String }) => {
+    recipient: async (obj: { recipientUid: string }) => {
       return await User.findOne({ uid: obj.recipientUid, });
     },
   },

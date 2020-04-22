@@ -97,18 +97,18 @@ export const TaskResolver = {
     },
   },
   Task: {
-    createdAt: (obj: { createdAt: Date; }) => {
+    createdAt: (obj: { createdAt: Date }) => {
       const date: Date = obj.createdAt;
       return date.toISOString();
     },
-    dueDate: (obj: { dueDate: Date; }) => {
+    dueDate: (obj: { dueDate: Date }) => {
       const date: Date = obj.dueDate;
       return date.toISOString();
     },
-    createdBy: async (obj: { createdBy: string; }) => {
+    createdBy: async (obj: { createdBy: string }) => {
       return await User.findOne({ uid: obj.createdBy });
     },
-    assignedTo: async (obj: { assignedTo: string; }) => {
+    assignedTo: async (obj: { assignedTo: string }) => {
       return await User.findOne({ uid: obj.assignedTo });
     }
   }
