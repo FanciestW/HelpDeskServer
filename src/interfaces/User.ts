@@ -12,6 +12,7 @@ interface IUser extends Document {
     phone?: string;
     company?: string;
     isTechnician: boolean;
+    createdAt: Date;
 }
 
 export default IUser;

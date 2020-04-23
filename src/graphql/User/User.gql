@@ -7,6 +7,7 @@ type User {
   email: String,
   phone: String,
   company: String,
+  verified: Boolean,
   isTechnician: Boolean,
 }
 
