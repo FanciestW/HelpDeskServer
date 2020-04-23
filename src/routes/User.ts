@@ -93,7 +93,7 @@ router.post('/logout', async (req: Request, res: Response) => {
 });
 
 router.get('/verify', async (req: Request, res: Response) => {
-  const token = req.query?.token;
+  const token = req.query?.token.toString();
   if (token) {
     const verification = await EmailVerification.findOneAndDelete({
       $and: [
