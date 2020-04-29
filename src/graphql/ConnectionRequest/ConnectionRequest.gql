@@ -1,4 +1,5 @@
 type ConnectionRequest {
+  requestId: String,
   requesterUid: String
   requester: User
   recipientUid: String
