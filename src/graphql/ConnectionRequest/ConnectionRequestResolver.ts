@@ -30,6 +30,11 @@ export const ConnectionRequestResolver = {
     newRequest: async (_: any, args: { recipientUid: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
+      const requestUser: IUser = await User.findOne({ uid });
+      const recipientUser: IUser = await User.findOne({ uid: args.recipientUid });
+      if (!requestUser.isTechnician && !recipientUser.isTechnician) {
+        return new Error('A client can not request to connect with another client');
+      }
       return await ConnectionRequest.create({
         requestId: await nanoid(),
         requesterUid: uid,
@@ -39,7 +44,11 @@ export const ConnectionRequestResolver = {
     newEmailRequest: async (_: any, args: { recipientEmail: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
+      const requestUser: IUser = await User.findOne({ uid });
       const recipientUser: IUser = await User.findOne({ email: args.recipientEmail });
+      if (!requestUser.isTechnician && !recipientUser.isTechnician) {
+        return new Error('A client can not request to connect with another client');
+      }
       if (!recipientUser) {
         return new Error('No user with email exists');
       } else {
