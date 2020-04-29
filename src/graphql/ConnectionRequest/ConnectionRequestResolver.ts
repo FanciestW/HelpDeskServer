@@ -5,7 +5,7 @@ import TechnicianRelationship from '../../models/TechnicianRelationship';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
 import { customAlphabet } from 'nanoid/async';
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
 export const ConnectionRequestResolver = {
   Query: {

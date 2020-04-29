@@ -2,7 +2,7 @@
 import express, { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
 import { customAlphabet } from 'nanoid/async';
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';

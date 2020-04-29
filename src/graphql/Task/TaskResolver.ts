@@ -6,7 +6,7 @@ import Task from '../../models/Task';
 import ITask from '../../interfaces/Task';
 import User from '../../models/User';
 import { customAlphabet } from 'nanoid/async';
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
 export const TaskResolver = {
   Query: {

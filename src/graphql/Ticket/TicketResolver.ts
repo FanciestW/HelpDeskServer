@@ -7,7 +7,7 @@ import { sendAssignedTicketEmail } from '../../utils/EmailSender';
 // eslint-disable-next-line no-unused-vars
 import ITicket from '../../interfaces/Ticket';
 import { customAlphabet } from 'nanoid/async';
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
 export const TicketResolver = {
   Query: {
