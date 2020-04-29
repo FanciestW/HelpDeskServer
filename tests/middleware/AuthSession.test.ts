@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import httpMocks from 'node-mocks-http';
 import sinon from 'sinon';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import crypto from 'crypto';
 import AuthSessionMiddlware from '../../src/middleware/AuthSession';
 import Mongoose from 'mongoose';

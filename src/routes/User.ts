@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import express, { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
-import nanoid from 'nanoid';
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';
@@ -56,7 +57,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Respon
     }
     let uid: string;
     do {
-      uid = nanoid(14);
+      uid = await nanoid();
     } while (await User.exists({ uid, }));
     const passwordDigest = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
     const newUser = await new User({

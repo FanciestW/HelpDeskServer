@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import { Request } from 'express';
-import nanoid from 'nanoid';
 import { getUidFromSession } from '../../utils/SessionHelper';
 import Task from '../../models/Task';
 // eslint-disable-next-line no-unused-vars
 import ITask from '../../interfaces/Task';
 import User from '../../models/User';
-
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
 
 export const TaskResolver = {
   Query: {
@@ -85,7 +85,7 @@ export const TaskResolver = {
       if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, dueDate } = args;
       return await Task.create({
-        taskId: nanoid(),
+        taskId: await nanoid(),
         title,
         description,
         createdBy: uid,

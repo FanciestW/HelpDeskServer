@@ -1,12 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import { Request } from 'express';
-import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
 import { sendAssignedTicketEmail } from '../../utils/EmailSender';
 // eslint-disable-next-line no-unused-vars
 import ITicket from '../../interfaces/Ticket';
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
 
 export const TicketResolver = {
   Query: {
@@ -101,7 +102,7 @@ export const TicketResolver = {
       if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, dueDate } = args;
       const newTicket = await Ticket.create({
-        ticketId: nanoid(),
+        ticketId: await nanoid(),
         title,
         description,
         createdBy: uid,

@@ -4,6 +4,8 @@ import ConnectionRequest from '../../models/ConnectionRequest';
 import TechnicianRelationship from '../../models/TechnicianRelationship';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 25);
 
 export const ConnectionRequestResolver = {
   Query: {
@@ -28,6 +30,7 @@ export const ConnectionRequestResolver = {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await ConnectionRequest.create({
+        requestId: await nanoid(),
         requesterUid: uid,
         recipientUid: args.recipientUid
       });

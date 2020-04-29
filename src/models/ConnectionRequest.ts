@@ -3,6 +3,7 @@ import IConnectionRequest from '../interfaces/ConnectionRequest';
 import User from '../models/User';
 
 export const ConnectionRequestSchema: Schema<IConnectionRequest> = new Schema<IConnectionRequest>({
+  requestId: { type: String, required: true, unique: true },
   requesterUid: {
     type: String,
     required: true,

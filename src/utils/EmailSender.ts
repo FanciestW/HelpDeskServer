@@ -1,4 +1,4 @@
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import sgMail from '@sendgrid/mail';
 import EmailTransaction from '../models/EmailTransaction';
 import EmailVerification from '../models/EmailVerification';

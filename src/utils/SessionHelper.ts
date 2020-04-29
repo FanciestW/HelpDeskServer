@@ -1,4 +1,4 @@
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import crypto from 'crypto';
 import Session from '../models/Session';
 import ISession from '../interfaces/Session';
