@@ -4,6 +4,7 @@ import ConnectionRequest from '../../models/ConnectionRequest';
 import TechnicianRelationship from '../../models/TechnicianRelationship';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
+import IUser from '../../interfaces/User';
 import { customAlphabet } from 'nanoid/async';
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
@@ -34,6 +35,20 @@ export const ConnectionRequestResolver = {
         requesterUid: uid,
         recipientUid: args.recipientUid
       });
+    },
+    newEmailRequest: async (_: any, args: { recipientEmail: string }, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const recipientUser: IUser = await User.findOne({ email: args.recipientEmail });
+      if (!recipientUser) {
+        return new Error('No user with email exists');
+      } else {
+        return await ConnectionRequest.create({
+          requestId: await nanoid(),
+          requesterUid: uid,
+          recipientUid: recipientUser?.uid,
+        });
+      }
     },
     acceptRequest: async (_: any, args: { requesterUid: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);

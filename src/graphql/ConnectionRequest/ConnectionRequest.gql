@@ -27,6 +27,13 @@ type Mutation {
   ): ConnectionRequest
 
   """
+    Uses session data and a given email to create a new request on behalf of the user.
+  """
+  newEmailRequest(
+    recipientEmail: String!
+  ): ConnectionRequest
+
+  """
     Uses session data to accept a request on behalf of that user.
     Include the requester's uid as the parameter.
   """
