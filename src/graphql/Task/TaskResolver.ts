@@ -95,6 +95,24 @@ export const TaskResolver = {
         dueDate,
       });
     },
+    updateTask: async (_: any, args: ITask, request: Request) => {
+      try {
+        const uid = await getUidFromSession(request.signedCookies?.session);
+        if (!uid) return new Error('Unauthorized');
+        const { taskId, title, description, assignedTo, status, priority, dueDate } = args;
+        const updatedTask = await Task.findOneAndUpdate({ taskId }, {
+          title,
+          description,
+          assignedTo,
+          status,
+          priority,
+          dueDate,
+        }, { omitUndefined: true, new: true });
+        return updatedTask;
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
   Task: {
     createdAt: (obj: { createdAt: Date }) => {
