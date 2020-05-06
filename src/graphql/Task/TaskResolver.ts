@@ -74,7 +74,7 @@ export const TaskResolver = {
       oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
       return await Task.find({ $and: [
         { assignedTo: uid },
-        { status: { $in: ['new', 'pending', 'started'] } },
+        { status: { $in: ['new', 'pending', 'started', 'in progress'] } },
         { dueDate: { $lte: oneWeekFromNow } },
       ]});
     },
