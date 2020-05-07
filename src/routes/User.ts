@@ -104,9 +104,9 @@ router.get('/verify', async (req: Request, res: Response) => {
     });
     if (verification?.uid) {
       await User.updateOne({ uid: verification.uid, }, { verified: true });
-      return res.status(200).send('Email verified');
+      return res.status(200).redirect('/verify/success');
     } else {
-      return res.status(400).send('Broken Link, please try sending a new email');
+      return res.status(200).redirect('/verify/fail');
     }
   } else {
     return res.status(400).send('Broken Link, please try sending a new email');

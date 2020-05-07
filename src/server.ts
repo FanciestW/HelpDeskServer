@@ -12,7 +12,6 @@ import typeDefs from './graphql/Schema';
 import resolvers from './graphql/AllResolver';
 import { makeExecutableSchema } from 'graphql-tools';
 import AuthSession from './middleware/AuthSession';
-import { sendAssignedTicketEmail } from './utils/EmailSender';
 
 const mongooseOptions = {
   useNewUrlParser: true,
