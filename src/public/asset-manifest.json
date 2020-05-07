@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/static/js/main.6a6679ed.chunk.js",
+    "main.js.map": "/static/js/main.6a6679ed.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.c855a36f.js",
+    "runtime-main.js.map": "/static/js/runtime-main.c855a36f.js.map",
+    "static/js/2.a6b5ff3d.chunk.js": "/static/js/2.a6b5ff3d.chunk.js",
+    "static/js/2.a6b5ff3d.chunk.js.map": "/static/js/2.a6b5ff3d.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.f81964921a3998fe0500bcbc5e16c50e.js": "/precache-manifest.f81964921a3998fe0500bcbc5e16c50e.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.a6b5ff3d.chunk.js.LICENSE.txt": "/static/js/2.a6b5ff3d.chunk.js.LICENSE.txt",
+    "static/media/confused_travolta.gif": "/static/media/confused_travolta.4a06efb5.gif"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c855a36f.js",
+    "static/js/2.a6b5ff3d.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.6a6679ed.chunk.js"
+  ]
+}

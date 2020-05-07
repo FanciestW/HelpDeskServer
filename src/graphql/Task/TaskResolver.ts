@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import { Request } from 'express';
-import nanoid from 'nanoid';
 import { getUidFromSession } from '../../utils/SessionHelper';
 import Task from '../../models/Task';
 // eslint-disable-next-line no-unused-vars
 import ITask from '../../interfaces/Task';
 import User from '../../models/User';
-
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
 export const TaskResolver = {
   Query: {
@@ -59,12 +59,23 @@ export const TaskResolver = {
         { status: 'archived' },
       ]});
     },
-    getDeletedTickets: async(_: any, _args: any, request: Request) => {
-      const uid = getUidFromSession(request.signedCookies?.session);
+    getDeletedTasks: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Task.find({ $and: [
         { $or: [{ createdBy: uid }, { assignedTo: uid }]},
         { status: 'deleted' },
+      ]});
+    },
+    getUpcomingTasks: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      const oneWeekFromNow = new Date();
+      oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
+      return await Task.find({ $and: [
+        { assignedTo: uid },
+        { status: { $in: ['new', 'pending', 'started', 'in progress'] } },
+        { dueDate: { $lte: oneWeekFromNow } },
       ]});
     },
   },
@@ -74,7 +85,7 @@ export const TaskResolver = {
       if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, dueDate } = args;
       return await Task.create({
-        taskId: nanoid(),
+        taskId: await nanoid(),
         title,
         description,
         createdBy: uid,
@@ -84,20 +95,38 @@ export const TaskResolver = {
         dueDate,
       });
     },
+    updateTask: async (_: any, args: ITask, request: Request) => {
+      try {
+        const uid = await getUidFromSession(request.signedCookies?.session);
+        if (!uid) return new Error('Unauthorized');
+        const { taskId, title, description, assignedTo, status, priority, dueDate } = args;
+        const updatedTask = await Task.findOneAndUpdate({ taskId }, {
+          title,
+          description,
+          assignedTo,
+          status,
+          priority,
+          dueDate,
+        }, { omitUndefined: true, new: true });
+        return updatedTask;
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
   Task: {
-    createdAt: (obj: { createdAt: Date; }) => {
+    createdAt: (obj: { createdAt: Date }) => {
       const date: Date = obj.createdAt;
       return date.toISOString();
     },
-    dueDate: (obj: { dueDate: Date; }) => {
+    dueDate: (obj: { dueDate: Date }) => {
       const date: Date = obj.dueDate;
       return date.toISOString();
     },
-    createdBy: async (obj: { createdBy: string; }) => {
+    createdBy: async (obj: { createdBy: string }) => {
       return await User.findOne({ uid: obj.createdBy });
     },
-    assignedTo: async (obj: { assignedTo: string; }) => {
+    assignedTo: async (obj: { assignedTo: string }) => {
       return await User.findOne({ uid: obj.assignedTo });
     }
   }

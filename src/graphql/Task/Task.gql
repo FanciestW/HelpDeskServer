@@ -18,7 +18,8 @@ type Query {
   getAssignedTasks: [Task]
   getCreatedTasks: [Task]
   getArchivedTasks: [Task]
-  getDelectedTasks: [Task]
+  getDeletedTasks: [Task]
+  getUpcomingTasks: [Task]
 }
 
 type Mutation {

@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 
-export default (types: Object): RequestHandler => {
+export default (types: Record<string, any>): RequestHandler => {
   return function(req: Request, res: Response, next: NextFunction) {
     res.locals.body = {};
     Object.entries(types).forEach(([key, type]) => {

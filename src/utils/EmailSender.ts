@@ -1,4 +1,4 @@
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import sgMail from '@sendgrid/mail';
 import EmailTransaction from '../models/EmailTransaction';
 import EmailVerification from '../models/EmailVerification';
@@ -28,6 +28,7 @@ export async function sendAssignedTicketEmail(
     to: assigneeEmail,
     from: 'helpdeskbot@williamlin.tech',
     templateId: 'd-7b4db3bb33ad421091fabad78302485d',
+    // eslint-disable-next-line @typescript-eslint/camelcase
     dynamic_template_data: {
       creatorName,
       creatorEmail,
@@ -79,6 +80,7 @@ export async function sendVerificationEmail(uid: string, email: string, name: st
       to: email,
       from: 'helpdeskbot@williamlin.tech',
       templateId: 'd-9ce5ca4b89114645b1f850f5e9ecd7c9',
+      // eslint-disable-next-line @typescript-eslint/camelcase
       dynamic_template_data: {
         name,
         buttonUrl: verificationUrl,

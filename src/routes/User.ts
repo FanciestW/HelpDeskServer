@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import express, { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
-import nanoid from 'nanoid';
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 import StrongParams from '../middleware/StrongParam';
 import User from '../models/User';
 import { createSession, deleteSession } from '../utils/SessionHelper';
@@ -56,7 +57,7 @@ router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Respon
     }
     let uid: string;
     do {
-      uid = nanoid(14);
+      uid = await nanoid();
     } while (await User.exists({ uid, }));
     const passwordDigest = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
     const newUser = await new User({
@@ -71,7 +72,9 @@ router.post('/signup', StrongParams(signUpStrongParams), async (req, res: Respon
       isTechnician
     }).save();
     if (newUser) {
-      sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
+      if (process.env.ENV !== 'DEV') {
+        sendVerificationEmail(uid, newUser.email, newUser.firstName, req.headers.host);
+      }
       const sid = await createSession(newUser.uid);
       return res.cookie('session', sid, { maxAge: 86400000, signed: true, httpOnly: true }).sendStatus(200);
     } else {
@@ -91,7 +94,7 @@ router.post('/logout', async (req: Request, res: Response) => {
 });
 
 router.get('/verify', async (req: Request, res: Response) => {
-  const token = req.query?.token;
+  const token = req.query?.token.toString();
   if (token) {
     const verification = await EmailVerification.findOneAndDelete({
       $and: [
@@ -101,9 +104,9 @@ router.get('/verify', async (req: Request, res: Response) => {
     });
     if (verification?.uid) {
       await User.updateOne({ uid: verification.uid, }, { verified: true });
-      return res.status(200).send('Email verified');
+      return res.status(200).redirect('/verify/success');
     } else {
-      return res.status(400).send('Broken Link, please try sending a new email');
+      return res.status(200).redirect('/verify/fail');
     }
   } else {
     return res.status(400).send('Broken Link, please try sending a new email');

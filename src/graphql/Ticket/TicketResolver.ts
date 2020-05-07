@@ -1,16 +1,17 @@
 // eslint-disable-next-line no-unused-vars
 import { Request } from 'express';
-import nanoid from 'nanoid';
 import Ticket from '../../models/Ticket';
 import User from '../../models/User';
 import { getUidFromSession } from '../../utils/SessionHelper';
 import { sendAssignedTicketEmail } from '../../utils/EmailSender';
 // eslint-disable-next-line no-unused-vars
 import ITicket from '../../interfaces/Ticket';
+import { customAlphabet } from 'nanoid/async';
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 30);
 
 export const TicketResolver = {
   Query: {
-    getATicket: async (_: any, args: { ticketId: string; }, request: Request) => {
+    getATicket: async (_: any, args: { ticketId: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.findOne({ $and: [
@@ -74,6 +75,26 @@ export const TicketResolver = {
         ]
       });
     },
+    getOpenTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+          { status: { $in: ['started', 'in progress'] } },
+        ]
+      });
+    },
+    getDoneTickets: async(_: any, _args: any, request: Request) => {
+      const uid = await getUidFromSession(request.signedCookies?.session);
+      if (!uid) return new Error('Unauthorized');
+      return await Ticket.find({
+        $and: [
+          { $or: [{ createdBy: uid }, { assignedTo: uid }] },
+          { status: 'done' },
+        ]
+      });
+    },
   },
   Mutation: {
     newTicket: async (_: any, args: ITicket, request: Request) => {
@@ -81,7 +102,7 @@ export const TicketResolver = {
       if (!uid) return new Error('Unauthorized');
       const { title, description, assignedTo, status, priority, dueDate } = args;
       const newTicket = await Ticket.create({
-        ticketId: nanoid(),
+        ticketId: await nanoid(),
         title,
         description,
         createdBy: uid,
@@ -134,12 +155,12 @@ export const TicketResolver = {
         console.log(err);
       }
     },
-    archiveTicket: async (_: any, args: { ticketId: string; }, request: Request) => {
+    archiveTicket: async (_: any, args: { ticketId: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       return await Ticket.findOneAndUpdate({ ticketId: args.ticketId }, { status: 'archived' }, { new: true});
     },
-    deleteTicket: async(_: any, args: { mark?: boolean; ticketId: string; }, request: Request) => {
+    deleteTicket: async(_: any, args: { mark?: boolean; ticketId: string }, request: Request) => {
       const uid = await getUidFromSession(request.signedCookies?.session);
       if (!uid) return new Error('Unauthorized');
       const { mark = true, ticketId } = args;
@@ -151,18 +172,18 @@ export const TicketResolver = {
     }
   },
   Ticket: {
-    createdAt: (obj: { createdAt: Date; }) => {
+    createdAt: (obj: { createdAt: Date }) => {
       const date: Date = obj.createdAt;
       return date.toISOString();
     },
-    dueDate: (obj: { dueDate: Date; }) => {
+    dueDate: (obj: { dueDate: Date }) => {
       const date: Date = obj.dueDate;
       return date.toISOString();
     },
-    createdBy: async (obj: { createdBy: string; }) => {
+    createdBy: async (obj: { createdBy: string }) => {
       return await User.findOne({ uid: obj.createdBy });
     },
-    assignedTo: async (obj: { assignedTo: string; }) => {
+    assignedTo: async (obj: { assignedTo: string }) => {
       return await User.findOne({ uid: obj.assignedTo });
     }
   }

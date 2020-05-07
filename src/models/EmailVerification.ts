@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import IEmailVerification from '../interfaces/EmailVerification';
 import User from './User';
-import Session from './Session';
 
 const validateUid = async (uid: string) => {
   if (await User.countDocuments({ uid, }) > 0) {

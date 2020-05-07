@@ -11,7 +11,8 @@ interface IUser extends Document {
     verified: boolean;
     phone?: string;
     company?: string;
-    isTechnician: boolean
+    isTechnician: boolean;
+    createdAt: Date;
 }
 
 export default IUser;

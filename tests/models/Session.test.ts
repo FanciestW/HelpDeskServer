@@ -1,6 +1,6 @@
 import Mongoose from 'mongoose';
-import nanoid from 'nanoid';
-import Session, { SessionSchema } from '../../src/models/Session';
+import { nanoid } from 'nanoid';
+import Session from '../../src/models/Session';
 import User from '../../src/models/User';
 import chai, { assert, expect } from 'chai';
 chai.use(require('chai-as-promised'));

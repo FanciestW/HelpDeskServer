@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import Task from '../../src/models/Task';
 import User from '../../src/models/User';
 import Ticket from '../../src/models/Ticket';

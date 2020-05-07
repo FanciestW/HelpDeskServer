@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import Ticket from '../../src/models/Ticket';
 import User from '../../src/models/User';
 import chai, { expect, assert } from 'chai';
