@@ -8,11 +8,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       res.locals.sessionCookie = sid;
       return next();
     } else {
-      next(new Error('Unable to authenticate user session'));
       return res.sendStatus(401);
     }
   } else {
-    next(new Error('Unable to authenticate user session'));
     return res.sendStatus(401);
   }
 };
