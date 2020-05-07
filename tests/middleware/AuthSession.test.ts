@@ -93,8 +93,8 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
+      expect(next.calledOnce).to.equal(false);
+      expect(response.statusCode).to.equal(401);
     });
 
     it('Tampered with Session', async function() {
@@ -108,8 +108,8 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
+      expect(next.calledOnce).to.equal(false);
+      expect(response.statusCode).to.equal(401);
     });
 
     it('Unsigned Session cookie', async function() {
@@ -122,8 +122,8 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
+      expect(next.calledOnce).to.equal(false);
+      expect(response.statusCode).to.equal(401);
     });
 
     it('User Session not in Database', async function() {
@@ -136,8 +136,8 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
+      expect(next.calledOnce).to.equal(false);
+      expect(response.statusCode).to.equal(401);
     });
 
     it('User Session Expired', async function() {
@@ -157,8 +157,8 @@ describe('Session Authentication Middleware Test', function () {
       const response = httpMocks.createResponse();
       const next = sinon.spy();
       await AuthSessionMiddlware(request, response, next);
-      expect(next.calledOnce).to.equal(true);
-      expect(next.getCall(0).args[0]).to.match(/Unable to authenticate user session/);
+      expect(next.calledOnce).to.equal(false);
+      expect(response.statusCode).to.equal(401);
     });
   });
 });
