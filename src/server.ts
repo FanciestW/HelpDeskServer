@@ -1,5 +1,6 @@
 require('dotenv').config();
 import express from 'express';
+import path from 'path';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import graphqlHTTP from 'express-graphql';
@@ -32,18 +33,11 @@ mongoose.connect(mongoUri, mongooseOptions, (err) => {
 const app = express();
 
 // Express Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
-app.use(RequestTagger);
-app.use(Logger);
-
-
-app.get('/api/emailtest', async (_req, res) => {
-  const resEmail = await sendAssignedTicketEmail('wlin26@yahoo.com', 'ashaw2512@gmail.com', 'Alyson', 'William', 'test', 'test description', 'https://github.com/FanciestW');
-  res.status(200).send(JSON.stringify(resEmail, null, 2));
-});
-
+app.use('/api', bodyParser.urlencoded({ extended: true }));
+app.use('/api', bodyParser.json());
+app.use('/api', cookieParser(process.env.COOKIE_SECRET || undefined));
+app.use('/api', RequestTagger);
+app.use('/api', Logger);
 app.use('/api/graphql', AuthSession);
 
 // Express Routes
@@ -55,6 +49,12 @@ app.use('/api/graphql', graphqlHTTP({
   schema,
   graphiql: true,
 }));
+
+// React Frontend Hosting
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/*', function(req, res) {
+  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
